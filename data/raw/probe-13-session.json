@@ -1,0 +1,58 @@
+{
+  "authed before logout": 200,
+  "POST /auth/logout": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "note": "tokens are stateless; discard them client side"
+    }
+  },
+  "same token after logout": {
+    "status": 200
+  },
+  "docs say logout invalidates the token; it does": false,
+  "first token still valid after a second login": true,
+  "POST /auth/refresh": {
+    "status": 200,
+    "keys": [
+      "access_token",
+      "refresh_token",
+      "token_type",
+      "expires_in",
+      "refresh_url",
+      "user"
+    ],
+    "expires_in": 900
+  },
+  "refresh returns a NEW refresh token": false,
+  "the old refresh token still works (no rotation enforced)": 200,
+  "refresh with a junk token": {
+    "status": 401,
+    "detail": "malformed or tampered token"
+  },
+  "demo1 saved count": 1,
+  "demo2 saved count (should be 0)": 0,
+  "saved lists are per user": true,
+  "saved survives a re-login": true,
+  "saved returns full listing objects": true,
+  "GET a listing that does not exist": {
+    "status": 404,
+    "detail": "no such listing in your city"
+  },
+  "saving the same listing twice": {
+    "status": 201,
+    "body": {
+      "ok": true,
+      "listing_id": "MAG-4001518",
+      "saved_count": 1
+    }
+  },
+  "deleting something not saved": {
+    "status": 404,
+    "detail": "not in your saved list"
+  },
+  "saving a listing id that does not exist": {
+    "status": 404,
+    "detail": "no such listing in your city"
+  }
+}
