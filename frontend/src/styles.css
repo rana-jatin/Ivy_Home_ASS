@@ -11,6 +11,11 @@
   --bad: #f85149;
   --dup: #a371f7;
   --radius: 10px;
+  /* chart marks: validated against the panel (#161b22) with the dataviz
+     palette checker - blue and red clear every check; grey is context only */
+  --viz-accent: #3987e5;
+  --viz-flag: #e66767;
+  --viz-context: #6e7681;
 }
 
 * { box-sizing: border-box; }
@@ -182,3 +187,52 @@ button.linkish:hover { text-decoration: underline; }
 .toast .close { color: var(--muted); font-size: 18px; line-height: 1; }
 @keyframes toast-in { from { transform: translateY(6px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
+
+/* ---- insights ---- */
+.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; margin: 0 0 16px; }
+.brief { margin-bottom: 8px; }
+.brief h2 { margin: 0 0 8px; }
+.brief ul { margin: 0; padding-left: 18px; line-height: 1.65; }
+.brief li + li { margin-top: 6px; }
+h2.part {
+  font-size: 13px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+  margin: 40px 0 12px; padding-top: 14px; border-top: 1px solid var(--line);
+}
+a.kpi.link { color: inherit; display: block; transition: border-color .12s; }
+a.kpi.link:hover { text-decoration: none; border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+a.kpi.link .k::after { content: ' →'; color: var(--accent); }
+.kpi .v { font-variant-numeric: normal; }
+.barcell { display: flex; align-items: center; gap: 10px; min-width: 190px; }
+.hbar { flex: 1; max-width: 140px; height: 10px; }
+.hbar > i { display: block; height: 100%; background: var(--viz-accent); border-radius: 0 4px 4px 0; }
+.barcell .num { font-variant-numeric: tabular-nums; }
+.dupbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.dupbar input { max-width: 320px; }
+details.tableview { margin-top: 10px; font-size: 14px; }
+details.tableview summary { cursor: pointer; color: var(--accent); }
+
+/* ---- charts ---- */
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+.legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.multiples { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+.multiple { margin: 0; }
+.multiple canvas { display: block; width: 100%; background: var(--bg); border-radius: 6px; }
+.multiple figcaption { display: flex; flex-direction: column; font-size: 13px; margin-top: 6px; line-height: 1.35; }
+.chart-plot { position: relative; }
+.chart-plot svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: none; }
+.chart-plot .grid { stroke: var(--line); stroke-width: 1; }
+.chart-plot .ref { stroke: #444c56; stroke-width: 1; }
+.chart-plot .tick { fill: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.chart-plot .axis-title { fill: var(--muted); font-size: 12px; }
+.chart-plot .direct-label { fill: var(--text); font-size: 13px; }
+.chart-plot .pt { fill: var(--viz-context); fill-opacity: .7; stroke: var(--panel); stroke-width: 2; }
+.chart-plot .pt.flag { fill: var(--viz-flag); fill-opacity: 1; }
+.chart-plot .pt-hover { fill: none; stroke: var(--text); stroke-width: 1.5; pointer-events: none; }
+.tooltip {
+  position: absolute; transform: translate(-50%, calc(-100% - 12px)); pointer-events: none; z-index: 5;
+  display: flex; flex-direction: column; gap: 2px; white-space: nowrap; font-size: 13px;
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .35);
+}
+.tooltip.from-left { transform: translate(-12px, calc(-100% - 12px)); }
+.tooltip.from-right { transform: translate(calc(-100% + 12px), calc(-100% - 12px)); }

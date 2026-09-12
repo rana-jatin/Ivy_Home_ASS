@@ -19,7 +19,7 @@ const SORTS: Record<string, { label: string; cmp: (a: FixedRental, b: FixedRenta
   area_desc: { label: 'Largest first', cmp: (a, b) => b.carpet_area - a.carpet_area },
   rent_per_sqft_asc: { label: 'Cheapest per ft²', cmp: (a, b) => a.price / a.carpet_area - b.price / b.carpet_area },
 };
-const FILTER_KEYS = ['locality', 'bedroom', 'furnishing', 'max_rent', 'show'];
+const FILTER_KEYS = ['locality', 'bedroom', 'furnishing', 'max_rent', 'show', 'deposit'];
 
 export default function Rentals() {
   useTitle('Rentals');
@@ -31,6 +31,7 @@ export default function Rentals() {
   const furnishing = get('furnishing');
   const maxRent = get('max_rent');
   const show = get('show');
+  const deposit = get('deposit'); // 'months': only deposits served as a count of months
   const sort = get('sort', 'rent_asc');
   const page = Math.max(1, Number(get('page', '1')) || 1);
 
@@ -47,10 +48,11 @@ export default function Rentals() {
         if (furnishing && r.furnishing !== furnishing) return false;
         if (max !== null && r.price > max) return false;
         if (show === 'live' && !r.is_live) return false;
+        if (deposit === 'months' && !r.deposit_unit_corrected) return false;
         return true;
       })
       .sort((SORTS[sort] ?? SORTS.rent_asc).cmp);
-  }, [data, locality, bedroom, furnishing, maxRent, show, sort]);
+  }, [data, locality, bedroom, furnishing, maxRent, show, deposit, sort]);
 
   if (!data) return <DataPending />;
   const correctedRecords = data.rentals.filter((r) => r.deposit_unit_corrected);
@@ -66,6 +68,7 @@ export default function Rentals() {
     furnishing && { key: 'furnishing', label: furnishing },
     maxRent && { key: 'max_rent', label: `up to ${inr(Number(maxRent))}/month` },
     show === 'live' && { key: 'show', label: 'live only' },
+    deposit === 'months' && { key: 'deposit', label: 'deposit served in months' },
   ].filter((c): c is Chip => !!c);
 
   return (
@@ -96,7 +99,7 @@ export default function Rentals() {
         count={
           <>
             {filtered.length.toLocaleString('en-IN')} match · combined monthly rent {inr(totalRent)}
-            {locality && locality === assigned && show !== 'live' && !bedroom && !furnishing && !maxRent &&
+            {locality && locality === assigned && chips.length === 1 &&
               ' · every rental in the assigned locality'}
           </>
         }

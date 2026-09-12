@@ -17,6 +17,24 @@ export type BrowseQuery = {
   quality: string;
   sort: string;
   dedupe: boolean;
+  /**
+   * Narrow to one kind of record the rules found - what the insights screen
+   * links to. All optional, so the parity check's queries are unchanged.
+   */
+  flag?: string;
+  /** one impossibility, by its reason text (with flag=corrupt) */
+  reason?: string;
+  /** one seller phone number */
+  contact?: string;
+};
+
+/** The values `flag` takes, with what each keeps. */
+export const FLAGS: Record<string, string> = {
+  corrupt: 'impossible records',
+  fake: 'lead-generation listings',
+  inactive: 'not live',
+  duplicate: 'listed more than once',
+  area_fixed: 'area served in m²',
 };
 
 type Cmp = (a: FixedListing, b: FixedListing) => number;
@@ -45,6 +63,13 @@ export function selectListings(listings: FixedListing[], flags: Flags, q: Browse
       if (flags.corrupt.has(r.listing_id)) return false;
       if (flags.fakeIds.has(r.listing_id)) return false;
     }
+    if (q.flag === 'corrupt' && !flags.corrupt.has(r.listing_id)) return false;
+    if (q.flag === 'fake' && !flags.fakeIds.has(r.listing_id)) return false;
+    if (q.flag === 'inactive' && r.is_live) return false;
+    if (q.flag === 'duplicate' && !flags.duplicatesOf.has(r.listing_id)) return false;
+    if (q.flag === 'area_fixed' && !r.area_unit_corrected) return false;
+    if (q.reason && !(flags.corrupt.get(r.listing_id) ?? []).includes(q.reason as never)) return false;
+    if (q.contact && r.posted_by_contact !== q.contact) return false;
     if (q.quality === 'flagged') {
       const bad = flags.corrupt.has(r.listing_id) || flags.fakeIds.has(r.listing_id) || !r.is_live;
       if (!bad) return false;

@@ -4,7 +4,7 @@ import DataPending from '../components/DataPending';
 import { LakhField, ResultBar, SelectField, priceLabel, type Chip } from '../components/Filters';
 import ListingCard from '../components/ListingCard';
 import Pager, { paginate } from '../components/Pager';
-import { selectListings } from '../lib/browse';
+import { FLAGS, selectListings } from '../lib/browse';
 import { useQueryState } from '../lib/query';
 import { useTitle } from '../lib/useTitle';
 
@@ -25,7 +25,10 @@ const SORT = [
   { value: 'pps_asc', label: 'Cheapest per ft²' },
 ];
 /** the filters "Clear all" resets; sort is a preference, not a filter */
-const FILTER_KEYS = ['locality', 'bedroom', 'furnishing', 'property_type', 'min_price', 'max_price', 'quality', 'dedupe'];
+const FILTER_KEYS = [
+  'locality', 'bedroom', 'furnishing', 'property_type', 'min_price', 'max_price', 'quality', 'dedupe',
+  'flag', 'reason', 'contact',
+];
 
 // Every one of these runs locally, in lib/browse.ts. locality, bhk and
 // property_type do work on the server; min_price, max_price and furnishing are
@@ -45,6 +48,10 @@ export default function Browse() {
   const quality = get('quality', 'clean');
   const sort = get('sort', 'posted_desc');
   const dedupe = get('dedupe') === '1';
+  // Set by links from the insights screen rather than by the panel; shown as chips.
+  const flag = get('flag');
+  const reason = get('reason');
+  const contact = get('contact');
   const page = Math.max(1, Number(get('page', '1')) || 1);
 
   const localities = useMemo(
@@ -60,10 +67,10 @@ export default function Browse() {
     () =>
       data
         ? selectListings(data.listings, data.flags, {
-            locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe,
+            locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe, flag, reason, contact,
           })
         : [],
-    [data, locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe],
+    [data, locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe, flag, reason, contact],
   );
 
   if (!data) return <DataPending />;
@@ -78,8 +85,12 @@ export default function Browse() {
     maxPrice && { key: 'max_price', label: `up to ${priceLabel(maxPrice)}` },
     quality !== 'clean' && { key: 'quality', label: QUALITY.find((q) => q.value === quality)?.label ?? quality },
     dedupe && { key: 'dedupe', label: 'one per property' },
+    flag && { key: 'flag', label: FLAGS[flag] ?? flag },
+    reason && { key: 'reason', label: reason },
+    contact && { key: 'contact', label: `posted by ${contact}` },
   ].filter((c): c is Chip => !!c);
   const inverted = minPrice && maxPrice && Number(minPrice) > Number(maxPrice);
+  const hiddenByQuality = quality === 'clean' && (['corrupt', 'fake', 'inactive'].includes(flag) || !!reason);
 
   return (
     <main>
@@ -116,7 +127,13 @@ export default function Browse() {
         chips={chips}
         onRemove={(key) => set({ [key]: '' })}
         onClearAll={() => set(Object.fromEntries(FILTER_KEYS.map((k) => [k, ''])))}
-        warning={inverted ? 'The minimum price is above the maximum, so nothing can match.' : null}
+        warning={
+          inverted
+            ? 'The minimum price is above the maximum, so nothing can match.'
+            : hiddenByQuality
+              ? 'Those records are flagged, and "Live, genuine only" hides them - set Show to everything.'
+              : null
+        }
       />
 
       <div className="grid">

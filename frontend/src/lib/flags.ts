@@ -70,11 +70,23 @@ export type FakeProfile = {
 export const RADIUS_M = 150;
 export const AREA_TOL = 0.02;
 
+/** One phone number as the fraud rule scored it - flagged or not. */
+export type ContactScore = {
+  contact: string;
+  listings: number;
+  /** median of price per ft² over the locality-and-bedroom market rate */
+  ratio: number;
+  /** 8+ listings, every one verified and live */
+  perfect: boolean;
+};
+
 export type Flags = {
   corrupt: Map<string, CorruptReason[]>;
   fakeIds: Set<string>;
   fakeContacts: Set<string>;
   fakeProfiles: Map<string, FakeProfile>;
+  /** every phone number the fraud rule scored, cheapest median first */
+  contactScores: ContactScore[];
   /** listing_id -> the ids of every other record describing the same property */
   duplicatesOf: Map<string, string[]>;
   clusters: string[][];
@@ -221,6 +233,9 @@ export function computeFlags(listings: FixedListing[]): Flags {
     fakeIds,
     fakeContacts,
     fakeProfiles,
+    contactScores: scored.map((s) => ({
+      contact: s.contact, listings: s.rs.length, ratio: s.medianRatio, perfect: s.perfect,
+    })),
     duplicatesOf,
     clusters,
     distinctProperties: groups.size,
