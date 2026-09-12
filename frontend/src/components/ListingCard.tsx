@@ -28,23 +28,28 @@ export default function ListingCard({ r, flags }: { r: FixedListing; flags: Flag
   const { ids, toggle } = useSaved();
   const saved = ids.has(r.listing_id);
   return (
+    // The title link stretches over the whole card (see .listing in styles.css),
+    // so anywhere on the card opens the listing; the star and the badges sit
+    // above that layer and keep their own click and hover.
     <div className="card listing">
-      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+      <div className="listing-head">
         <Link className="title" to={`/listings/${encodeURIComponent(r.listing_id)}`}>
           {r.apartment_name}
         </Link>
         <button
+          className="star"
           onClick={() => toggle(r.listing_id)}
           title={saved ? 'Remove from saved' : 'Save this listing'}
           aria-label={saved ? `Remove ${r.apartment_name} from saved` : `Save ${r.apartment_name}`}
           aria-pressed={saved}
-          style={{ padding: '2px 9px', lineHeight: 1.4 }}
         >
           {saved ? '★' : '☆'}
         </button>
       </div>
       <div className="meta">
-        {r.bedroom} BHK · {r.property_type} · {r.locality} · floor {r.floor}/{r.total_floors}
+        {r.property_type === 'plot'
+          ? <>plot · {r.locality}</>
+          : <>{r.bedroom} BHK · {r.property_type} · {r.locality} · floor {r.floor}/{r.total_floors}</>}
       </div>
       <div className="price">
         {inrShort(r.price)}{' '}

@@ -12,6 +12,7 @@ import { useDataset } from '../api/store';
 import DataPending from '../components/DataPending';
 import { OFFLINE_SORT_TEST, REFERENCE, inr, inrShort, type FixedListing } from '../lib/corrections';
 import { AREA_TOL, RADIUS_M, corruptSummary } from '../lib/flags';
+import { useTitle } from '../lib/useTitle';
 
 function median(xs: number[]) {
   if (!xs.length) return 0;
@@ -60,6 +61,7 @@ function Kpi({ k, v, n }: { k: string; v: string; n?: string }) {
 }
 
 export default function Insights() {
+  useTitle('Insights');
   const data = useDataset();
 
   const stats = useMemo(() => {

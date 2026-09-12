@@ -7,6 +7,7 @@ import { Badges } from '../components/ListingCard';
 import { fixListing, inr, inrShort, istString, sqft, type FixedListing, type Listing } from '../lib/corrections';
 import { RADIUS_M } from '../lib/flags';
 import { useSaved } from '../lib/saved';
+import { useTitle } from '../lib/useTitle';
 
 export default function Detail() {
   const { id = '' } = useParams();
@@ -34,6 +35,7 @@ export default function Detail() {
   }, [id, direct]);
 
   const r = fromSnapshot ?? (fetched?.listing_id === id ? fetched : null);
+  useTitle(r ? r.apartment_name : error ? 'Listing not found' : 'Listing');
 
   if (!r && error) {
     const missing = error instanceof ApiError && error.status === 404;
@@ -133,7 +135,7 @@ export default function Detail() {
             <dt>Configuration</dt>
             <dd>{r.bedroom} bed · {r.bathroom} bath · {r.balcony} balcony · {r.covered_parking} parking</dd>
             <dt>Floor</dt>
-            <dd>{r.floor} of {r.total_floors}</dd>
+            <dd>{r.property_type === 'plot' ? '— (a plot)' : `${r.floor} of ${r.total_floors}`}</dd>
             <dt>Furnishing</dt>
             <dd>{r.furnishing}</dd>
             <dt>Facing</dt>

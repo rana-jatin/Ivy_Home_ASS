@@ -1,6 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useTitle } from '../lib/useTitle';
 
 export default function NotFound() {
+  useTitle('Not found');
   const { pathname } = useLocation();
   return (
     <main>

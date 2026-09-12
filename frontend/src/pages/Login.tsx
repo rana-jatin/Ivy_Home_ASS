@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { login, sessionEndReason } from '../api/client';
+import { useTitle } from '../lib/useTitle';
 
 const DEMO = ['demo1@ivy.homes', 'demo2@ivy.homes', 'demo3@ivy.homes'];
 
 export default function Login() {
+  useTitle('Sign in');
   const [email, setEmail] = useState(DEMO[0]);
   const [password, setPassword] = useState('d1eecc3b8b');
   const [busy, setBusy] = useState(false);

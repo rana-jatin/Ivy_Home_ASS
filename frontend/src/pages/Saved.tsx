@@ -4,8 +4,10 @@ import { useDataset } from '../api/store';
 import DataPending from '../components/DataPending';
 import ListingCard from '../components/ListingCard';
 import { useSaved } from '../lib/saved';
+import { useTitle } from '../lib/useTitle';
 
 export default function Saved() {
+  useTitle('Saved');
   const data = useDataset();
   const { ids, loading, error, refresh, toggle } = useSaved();
   if (!data) return <DataPending />;

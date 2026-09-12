@@ -79,8 +79,15 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 
-.listing { display: flex; flex-direction: column; gap: 7px; }
+.listing { display: flex; flex-direction: column; gap: 7px; position: relative; transition: border-color .12s; }
+.listing:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.listing:focus-within { outline: 2px solid var(--accent); outline-offset: -1px; }
+.listing-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .listing .title { font-weight: 600; }
+.listing .title:focus { outline: none; }
+.listing .title::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+.listing .star, .listing .badge[title] { position: relative; z-index: 1; }
+.listing .star { padding: 2px 9px; line-height: 1.4; }
 .listing .meta { color: var(--muted); font-size: 13px; }
 .listing .price { font-size: 19px; font-weight: 700; }
 .listing .pps { color: var(--muted); font-size: 13px; font-weight: 400; }
