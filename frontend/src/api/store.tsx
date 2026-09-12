@@ -32,6 +32,11 @@ export type Dataset = {
   projectById: Map<string, FixedProject>;
   /** every listing record that names a project, live or not, by project_id */
   listingsByProject: Map<string, FixedListing[]>;
+  /**
+   * live listings per project_id. Compared with a project's total_listings,
+   * this is the reading that makes most projects agree - see Projects.
+   */
+  liveListingCount: Map<string, number>;
   /** when the pull behind this dataset finished, ms epoch */
   fetchedAt: number;
 };
@@ -96,6 +101,8 @@ function build(s: Snapshot): Dataset {
     if (!listingsByProject.has(r.project_id)) listingsByProject.set(r.project_id, []);
     listingsByProject.get(r.project_id)!.push(r);
   }
+  const liveListingCount = new Map<string, number>();
+  for (const [id, rs] of listingsByProject) liveListingCount.set(id, rs.filter((r) => r.is_live).length);
   return {
     listings,
     rentals: s.rentals.map(fixRental),
@@ -106,6 +113,7 @@ function build(s: Snapshot): Dataset {
     listingById: new Map(listings.map((r) => [r.listing_id, r])),
     projectById: new Map(projects.map((p) => [p.project_id, p])),
     listingsByProject,
+    liveListingCount,
     fetchedAt: s.fetchedAt,
   };
 }

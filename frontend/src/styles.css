@@ -96,8 +96,21 @@ label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px
 .badge.good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
 .badge.info { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
 
-.pager { display: flex; align-items: center; gap: 12px; margin-top: 18px; justify-content: center; }
+.pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
 .pager .count { color: var(--muted); font-size: 14px; }
+.pagebtns { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.pagebtns button { min-width: 38px; padding: 6px 10px; font-variant-numeric: tabular-nums; }
+.pagebtns button.current { background: var(--accent); border-color: var(--accent); color: #0b1220; font-weight: 600; }
+.pagebtns .gap { color: var(--muted); padding: 0 4px; }
+
+.resultcount { font-size: 13px; margin: -4px 0 10px; }
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: -2px 0 14px; font-size: 13px; }
+.chip {
+  font-size: 13px; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.chip span { color: var(--muted); margin-left: 2px; }
 
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }

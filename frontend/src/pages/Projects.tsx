@@ -1,13 +1,27 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDataset } from '../api/store';
-import { useQueryState } from '../lib/query';
 import DataPending from '../components/DataPending';
-import { inrShort, sqft } from '../lib/corrections';
+import { ResultBar, SelectField, type Chip } from '../components/Filters';
+import Pager, { paginate } from '../components/Pager';
+import { inrShort, sqft, type FixedProject } from '../lib/corrections';
+import { useQueryState } from '../lib/query';
+import { useTitle } from '../lib/useTitle';
 
 const PER_PAGE = 25;
 
+const STATUS = ['new launch', 'under construction', 'ready to move'];
+const ONLY = [{ value: 'wrong', label: 'Only those reporting it wrong' }];
+const SORTS: Record<string, { label: string; cmp: (a: FixedProject, b: FixedProject) => number }> = {
+  price_desc: { label: 'Highest maximum price', cmp: (a, b) => b.price_max_inr - a.price_max_inr },
+  price_asc: { label: 'Lowest starting price', cmp: (a, b) => a.price_min_inr - b.price_min_inr },
+  launch_desc: { label: 'Most recently launched', cmp: (a, b) => b.launch_date.localeCompare(a.launch_date) },
+  units_desc: { label: 'Most units', cmp: (a, b) => b.total_units - a.total_units },
+};
+const FILTER_KEYS = ['locality', 'status', 'only'];
+
 export default function Projects() {
+  useTitle('Projects');
   const data = useDataset();
   const { get, set } = useQueryState();
 
@@ -17,38 +31,29 @@ export default function Projects() {
   const sort = get('sort', 'price_desc');
   const page = Math.max(1, Number(get('page', '1')) || 1);
 
-  const liveCount = useMemo(() => {
-    const m = new Map<string, number>();
-    for (const r of data?.listings ?? []) {
-      if (r.project_id && r.is_live) m.set(r.project_id, (m.get(r.project_id) ?? 0) + 1);
-    }
-    return m;
-  }, [data]);
-
   const rows = useMemo(() => {
     if (!data) return [];
-    const cmp: Record<string, (a: any, b: any) => number> = {
-      price_desc: (a, b) => b.price_max_inr - a.price_max_inr,
-      price_asc: (a, b) => a.price_min_inr - b.price_min_inr,
-      launch_desc: (a, b) => b.launch_date.localeCompare(a.launch_date),
-      units_desc: (a, b) => b.total_units - a.total_units,
-    };
+    const live = (id: string) => data.liveListingCount.get(id) ?? 0;
     return data.projects
       .filter((p) => {
         if (locality && p.locality !== locality) return false;
         if (status && p.project_status !== status) return false;
-        if (only === 'wrong' && (liveCount.get(p.project_id) ?? 0) === p.total_listings) return false;
+        if (only === 'wrong' && live(p.project_id) === p.total_listings) return false;
         return true;
       })
-      .sort(cmp[sort] ?? cmp.price_desc);
-  }, [data, locality, status, only, sort, liveCount]);
+      .sort((SORTS[sort] ?? SORTS.price_desc).cmp);
+  }, [data, locality, status, only, sort]);
 
   if (!data) return <DataPending />;
+  const liveCount = data.liveListingCount;
   const wrong = data.projects.filter((p) => (liveCount.get(p.project_id) ?? 0) !== p.total_listings).length;
   const localities = [...new Set(data.projects.map((p) => p.locality))].sort();
-  const pages = Math.max(1, Math.ceil(rows.length / PER_PAGE));
-  const clamped = Math.min(page, pages);
-  const slice = rows.slice((clamped - 1) * PER_PAGE, clamped * PER_PAGE);
+  const { pages, current, slice } = paginate(rows, page, PER_PAGE);
+  const chips: Chip[] = [
+    locality && { key: 'locality', label: locality },
+    status && { key: 'status', label: status },
+    only === 'wrong' && { key: 'only', label: 'reporting the wrong count' },
+  ].filter((c): c is Chip => !!c);
 
   return (
     <main>
@@ -60,41 +65,19 @@ export default function Projects() {
       </p>
 
       <div className="filters">
-        <div>
-          <label htmlFor="p-loc">Locality</label>
-          <select id="p-loc" value={locality} onChange={(e) => set({ locality: e.target.value })}>
-            <option value="">Any</option>
-            {localities.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="p-st">Status</label>
-          <select id="p-st" value={status} onChange={(e) => set({ status: e.target.value })}>
-            <option value="">Any</option>
-            <option value="new launch">new launch</option>
-            <option value="under construction">under construction</option>
-            <option value="ready to move">ready to move</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="p-only">Listing count</label>
-          <select id="p-only" value={only} onChange={(e) => set({ only: e.target.value })}>
-            <option value="">All projects</option>
-            <option value="wrong">Only those reporting it wrong</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="p-sort">Sort</label>
-          <select id="p-sort" value={sort} onChange={(e) => set({ sort: e.target.value })}>
-            <option value="price_desc">Highest maximum price</option>
-            <option value="price_asc">Lowest starting price</option>
-            <option value="launch_desc">Most recently launched</option>
-            <option value="units_desc">Most units</option>
-          </select>
-        </div>
+        <SelectField id="p-loc" label="Locality" value={locality} onChange={(v) => set({ locality: v })} options={localities} />
+        <SelectField id="p-st" label="Status" value={status} onChange={(v) => set({ status: v })} options={STATUS} />
+        <SelectField id="p-only" label="Listing count" value={only} any="All projects" onChange={(v) => set({ only: v })} options={ONLY} />
+        <SelectField id="p-sort" label="Sort" value={sort} any={null} onChange={(v) => set({ sort: v })}
+          options={Object.entries(SORTS).map(([value, x]) => ({ value, label: x.label }))} />
       </div>
 
-      <p className="muted" style={{ fontSize: 13, marginTop: -4 }}>{rows.length} match</p>
+      <ResultBar
+        count={<>{rows.length} match</>}
+        chips={chips}
+        onRemove={(key) => set({ [key]: '' })}
+        onClearAll={() => set(Object.fromEntries(FILTER_KEYS.map((k) => [k, ''])))}
+      />
 
       <div className="scroll">
         <table>
@@ -138,11 +121,8 @@ export default function Projects() {
         </table>
       </div>
 
-      <div className="pager">
-        <button disabled={clamped <= 1} onClick={() => set({ page: String(clamped - 1) })}>Previous</button>
-        <span className="count">Page {clamped} of {pages}</span>
-        <button disabled={clamped >= pages} onClick={() => set({ page: String(clamped + 1) })}>Next</button>
-      </div>
+      <Pager current={current} pages={pages} total={rows.length} perPage={PER_PAGE}
+        onPage={(n) => set({ page: String(n) })} />
 
       <p className="muted" style={{ fontSize: 13 }}>
         Listing counts are compared against live listings, which is the reading that makes{' '}

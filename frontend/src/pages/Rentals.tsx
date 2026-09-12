@@ -1,12 +1,27 @@
 import { useMemo } from 'react';
 import { useDataset } from '../api/store';
-import { useQueryState } from '../lib/query';
 import DataPending from '../components/DataPending';
-import { inr, inrShort, sqft } from '../lib/corrections';
+import { Field, ResultBar, SelectField, type Chip } from '../components/Filters';
+import Pager, { paginate } from '../components/Pager';
+import { inr, inrShort, sqft, type FixedRental } from '../lib/corrections';
+import { useQueryState } from '../lib/query';
+import { useTitle } from '../lib/useTitle';
 
 const PER_PAGE = 24;
 
+const FURNISHING = ['unfurnished', 'semi-furnished', 'fully-furnished'];
+const SHOW = [{ value: 'live', label: 'Live only' }];
+const SORTS: Record<string, { label: string; cmp: (a: FixedRental, b: FixedRental) => number }> = {
+  rent_asc: { label: 'Rent, low to high', cmp: (a, b) => a.price - b.price },
+  rent_desc: { label: 'Rent, high to low', cmp: (a, b) => b.price - a.price },
+  posted_desc: { label: 'Newest first', cmp: (a, b) => b.posted_at.localeCompare(a.posted_at) },
+  area_desc: { label: 'Largest first', cmp: (a, b) => b.carpet_area - a.carpet_area },
+  rent_per_sqft_asc: { label: 'Cheapest per ft²', cmp: (a, b) => a.price / a.carpet_area - b.price / b.carpet_area },
+};
+const FILTER_KEYS = ['locality', 'bedroom', 'furnishing', 'max_rent', 'show'];
+
 export default function Rentals() {
+  useTitle('Rentals');
   const data = useDataset();
   const { get, set } = useQueryState();
 
@@ -14,6 +29,8 @@ export default function Rentals() {
   const bedroom = get('bedroom');
   const furnishing = get('furnishing');
   const maxRent = get('max_rent');
+  const show = get('show');
+  const sort = get('sort', 'rent_asc');
   const page = Math.max(1, Number(get('page', '1')) || 1);
 
   const localities = useMemo(
@@ -28,19 +45,27 @@ export default function Rentals() {
         if (bedroom && r.bedroom !== Number(bedroom)) return false;
         if (furnishing && r.furnishing !== furnishing) return false;
         if (max !== null && r.price > max) return false;
+        if (show === 'live' && !r.is_live) return false;
         return true;
       })
-      .sort((a, b) => a.price - b.price);
-  }, [data, locality, bedroom, furnishing, maxRent]);
+      .sort((SORTS[sort] ?? SORTS.rent_asc).cmp);
+  }, [data, locality, bedroom, furnishing, maxRent, show, sort]);
 
   if (!data) return <DataPending />;
   const correctedRecords = data.rentals.filter((r) => r.deposit_unit_corrected);
   const corrected = correctedRecords.length;
   const correctedSites = [...new Set(correctedRecords.map((r) => r.website))].sort();
-  const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const clamped = Math.min(page, pages);
-  const slice = filtered.slice((clamped - 1) * PER_PAGE, clamped * PER_PAGE);
+  const { pages, current, slice } = paginate(filtered, page, PER_PAGE);
   const totalRent = filtered.reduce((a, r) => a + r.price, 0);
+  const assigned = data.me?.assigned_locality;
+
+  const chips: Chip[] = [
+    locality && { key: 'locality', label: locality },
+    bedroom && { key: 'bedroom', label: `${bedroom} BHK` },
+    furnishing && { key: 'furnishing', label: furnishing },
+    maxRent && { key: 'max_rent', label: `up to ${inr(Number(maxRent))}/month` },
+    show === 'live' && { key: 'show', label: 'live only' },
+  ].filter((c): c is Chip => !!c);
 
   return (
     <main>
@@ -52,38 +77,32 @@ export default function Rentals() {
       </p>
 
       <div className="filters">
-        <div>
-          <label htmlFor="r-loc">Locality</label>
-          <select id="r-loc" value={locality} onChange={(e) => set({ locality: e.target.value })}>
-            <option value="">Any</option>
-            {localities.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="r-bed">Bedrooms</label>
-          <select id="r-bed" value={bedroom} onChange={(e) => set({ bedroom: e.target.value })}>
-            <option value="">Any</option>
-            {[1, 2, 3, 4].map((b) => <option key={b} value={b}>{b} BHK</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="r-furn">Furnishing</label>
-          <select id="r-furn" value={furnishing} onChange={(e) => set({ furnishing: e.target.value })}>
-            <option value="">Any</option>
-            <option value="unfurnished">unfurnished</option>
-            <option value="semi-furnished">semi-furnished</option>
-            <option value="fully-furnished">fully-furnished</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="r-max">Max monthly rent ₹</label>
-          <input id="r-max" type="number" value={maxRent} onChange={(e) => set({ max_rent: e.target.value }, { replace: true })} placeholder="no limit" />
-        </div>
+        <SelectField id="r-loc" label="Locality" value={locality} onChange={(v) => set({ locality: v })}
+          options={localities.map((l) => ({ value: l, label: l === assigned ? `${l} (assigned)` : l }))} />
+        <SelectField id="r-bed" label="Bedrooms" value={bedroom} onChange={(v) => set({ bedroom: v })}
+          options={[1, 2, 3, 4].map((b) => ({ value: String(b), label: `${b} BHK` }))} />
+        <SelectField id="r-furn" label="Furnishing" value={furnishing} onChange={(v) => set({ furnishing: v })} options={FURNISHING} />
+        <Field id="r-max" label="Max monthly rent ₹">
+          <input id="r-max" type="text" inputMode="numeric" autoComplete="off" value={maxRent} placeholder="no limit"
+            onChange={(e) => set({ max_rent: e.target.value.replace(/\D/g, '') }, { replace: true })} />
+        </Field>
+        <SelectField id="r-show" label="Show" value={show} any="Live and not live" onChange={(v) => set({ show: v })} options={SHOW} />
+        <SelectField id="r-sort" label="Sort" value={sort} any={null} onChange={(v) => set({ sort: v })}
+          options={Object.entries(SORTS).map(([value, s]) => ({ value, label: s.label }))} />
       </div>
 
-      <p className="muted" style={{ fontSize: 13, marginTop: -4 }}>
-        {filtered.length.toLocaleString('en-IN')} match · combined monthly rent {inr(totalRent)}
-      </p>
+      <ResultBar
+        count={
+          <>
+            {filtered.length.toLocaleString('en-IN')} match · combined monthly rent {inr(totalRent)}
+            {locality && locality === assigned && show !== 'live' && !bedroom && !furnishing && !maxRent &&
+              ' · every rental in the assigned locality'}
+          </>
+        }
+        chips={chips}
+        onRemove={(key) => set({ [key]: '' })}
+        onClearAll={() => set(Object.fromEntries(FILTER_KEYS.map((k) => [k, ''])))}
+      />
 
       <div className="scroll">
         <table>
@@ -113,8 +132,10 @@ export default function Rentals() {
                 <td className="num">{sqft(r.carpet_area)}</td>
                 <td>{r.furnishing}</td>
                 <td>
-                  {!r.is_live && <span className="badge warn">not live</span>}
-                  {r.deposit_unit_corrected && <span className="badge info">deposit fixed</span>}
+                  <div className="badges">
+                    {!r.is_live && <span className="badge warn">not live</span>}
+                    {r.deposit_unit_corrected && <span className="badge info">deposit fixed</span>}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -123,11 +144,8 @@ export default function Rentals() {
       </div>
       {slice.length === 0 && <div className="note">Nothing matches those filters.</div>}
 
-      <div className="pager">
-        <button disabled={clamped <= 1} onClick={() => set({ page: String(clamped - 1) })}>Previous</button>
-        <span className="count">Page {clamped} of {pages}</span>
-        <button disabled={clamped >= pages} onClick={() => set({ page: String(clamped + 1) })}>Next</button>
-      </div>
+      <Pager current={current} pages={pages} total={filtered.length} perPage={PER_PAGE}
+        onPage={(n) => set({ page: String(n) })} />
     </main>
   );
 }

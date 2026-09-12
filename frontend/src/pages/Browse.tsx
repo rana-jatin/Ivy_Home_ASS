@@ -1,17 +1,38 @@
 import { useMemo } from 'react';
 import { useDataset } from '../api/store';
-import { useQueryState } from '../lib/query';
 import DataPending from '../components/DataPending';
+import { LakhField, ResultBar, SelectField, priceLabel, type Chip } from '../components/Filters';
 import ListingCard from '../components/ListingCard';
+import Pager, { paginate } from '../components/Pager';
 import { selectListings } from '../lib/browse';
+import { useQueryState } from '../lib/query';
+import { useTitle } from '../lib/useTitle';
 
 const PER_PAGE = 24;
+
+const FURNISHING = ['unfurnished', 'semi-furnished', 'fully-furnished'];
+const QUALITY = [
+  { value: 'clean', label: 'Live, genuine only' },
+  { value: 'all', label: 'Everything the API returns' },
+  { value: 'flagged', label: 'Only flagged records' },
+];
+const SORT = [
+  { value: 'posted_desc', label: 'Newest first' },
+  { value: 'posted_asc', label: 'Oldest first' },
+  { value: 'price_asc', label: 'Price, low to high' },
+  { value: 'price_desc', label: 'Price, high to low' },
+  { value: 'area_desc', label: 'Largest first' },
+  { value: 'pps_asc', label: 'Cheapest per ft²' },
+];
+/** the filters "Clear all" resets; sort is a preference, not a filter */
+const FILTER_KEYS = ['locality', 'bedroom', 'furnishing', 'property_type', 'min_price', 'max_price', 'quality', 'dedupe'];
 
 // Every one of these runs locally, in lib/browse.ts. locality, bhk and
 // property_type do work on the server; min_price, max_price and furnishing are
 // accepted and ignored there. Doing them all in one place means the filter
 // panel behaves consistently instead of half of it silently doing nothing.
 export default function Browse() {
+  useTitle('Listings');
   const data = useDataset();
   const { get, set } = useQueryState();
 
@@ -46,9 +67,19 @@ export default function Browse() {
   );
 
   if (!data) return <DataPending />;
-  const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-  const clamped = Math.min(page, pages);
-  const slice = filtered.slice((clamped - 1) * PER_PAGE, clamped * PER_PAGE);
+  const { pages, current, slice } = paginate(filtered, page, PER_PAGE);
+
+  const chips: Chip[] = [
+    locality && { key: 'locality', label: locality },
+    bedroom && { key: 'bedroom', label: `${bedroom} BHK` },
+    furnishing && { key: 'furnishing', label: furnishing },
+    propertyType && { key: 'property_type', label: propertyType },
+    minPrice && { key: 'min_price', label: `from ${priceLabel(minPrice)}` },
+    maxPrice && { key: 'max_price', label: `up to ${priceLabel(maxPrice)}` },
+    quality !== 'clean' && { key: 'quality', label: QUALITY.find((q) => q.value === quality)?.label ?? quality },
+    dedupe && { key: 'dedupe', label: 'one per property' },
+  ].filter((c): c is Chip => !!c);
+  const inverted = minPrice && maxPrice && Number(minPrice) > Number(maxPrice);
 
   return (
     <main>
@@ -60,89 +91,41 @@ export default function Browse() {
       </p>
 
       <div className="filters">
-        <div>
-          <label htmlFor="f-loc">Locality</label>
-          <select id="f-loc" value={locality} onChange={(e) => set({ locality: e.target.value })}>
-            <option value="">Any</option>
-            {localities.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-bed">Bedrooms</label>
-          <select id="f-bed" value={bedroom} onChange={(e) => set({ bedroom: e.target.value })}>
-            <option value="">Any</option>
-            {[0, 1, 2, 3, 4, 5].map((b) => <option key={b} value={b}>{b} BHK</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-furn">Furnishing</label>
-          <select id="f-furn" value={furnishing} onChange={(e) => set({ furnishing: e.target.value })}>
-            <option value="">Any</option>
-            <option value="unfurnished">unfurnished</option>
-            <option value="semi-furnished">semi-furnished</option>
-            <option value="fully-furnished">fully-furnished</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-type">Type</label>
-          <select id="f-type" value={propertyType} onChange={(e) => set({ property_type: e.target.value })}>
-            <option value="">Any</option>
-            {types.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-min">Min price ₹</label>
-          <input id="f-min" type="number" inputMode="numeric" value={minPrice}
-            onChange={(e) => set({ min_price: e.target.value }, { replace: true })} placeholder="0" />
-        </div>
-        <div>
-          <label htmlFor="f-max">Max price ₹</label>
-          <input id="f-max" type="number" inputMode="numeric" value={maxPrice}
-            onChange={(e) => set({ max_price: e.target.value }, { replace: true })} placeholder="no limit" />
-        </div>
-        <div>
-          <label htmlFor="f-q">Show</label>
-          <select id="f-q" value={quality} onChange={(e) => set({ quality: e.target.value })}>
-            <option value="clean">Live, genuine only</option>
-            <option value="all">Everything the API returns</option>
-            <option value="flagged">Only flagged records</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-sort">Sort</label>
-          <select id="f-sort" value={sort} onChange={(e) => set({ sort: e.target.value })}>
-            <option value="posted_desc">Newest first</option>
-            <option value="posted_asc">Oldest first</option>
-            <option value="price_asc">Price, low to high</option>
-            <option value="price_desc">Price, high to low</option>
-            <option value="area_desc">Largest first</option>
-            <option value="pps_asc">Cheapest per ft²</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-dd">Duplicates</label>
-          <select id="f-dd" value={dedupe ? '1' : ''} onChange={(e) => set({ dedupe: e.target.value })}>
-            <option value="">Show every record</option>
-            <option value="1">One per property</option>
-          </select>
-        </div>
+        <SelectField id="f-loc" label="Locality" value={locality} onChange={(v) => set({ locality: v })} options={localities} />
+        <SelectField id="f-bed" label="Bedrooms" value={bedroom} onChange={(v) => set({ bedroom: v })}
+          options={[0, 1, 2, 3, 4, 5].map((b) => ({ value: String(b), label: `${b} BHK` }))} />
+        <SelectField id="f-furn" label="Furnishing" value={furnishing} onChange={(v) => set({ furnishing: v })} options={FURNISHING} />
+        <SelectField id="f-type" label="Type" value={propertyType} onChange={(v) => set({ property_type: v })} options={types} />
+        <LakhField id="f-min" label="Min price, ₹ lakh" rupees={minPrice} placeholder="0"
+          onChange={(v) => set({ min_price: v }, { replace: true })} />
+        <LakhField id="f-max" label="Max price, ₹ lakh" rupees={maxPrice} placeholder="no limit"
+          onChange={(v) => set({ max_price: v }, { replace: true })} />
+        <SelectField id="f-q" label="Show" value={quality} any={null} onChange={(v) => set({ quality: v })} options={QUALITY} />
+        <SelectField id="f-sort" label="Sort" value={sort} any={null} onChange={(v) => set({ sort: v })} options={SORT} />
+        <SelectField id="f-dd" label="Duplicates" value={dedupe ? '1' : ''} any="Show every record"
+          onChange={(v) => set({ dedupe: v })} options={[{ value: '1', label: 'One per property' }]} />
       </div>
 
-      <p className="muted" style={{ fontSize: 13, marginTop: -4 }}>
-        {filtered.length.toLocaleString('en-IN')} match
-        {quality === 'clean' && ' · hiding non-live, impossible and lead-generation records'}
-      </p>
+      <ResultBar
+        count={
+          <>
+            {filtered.length.toLocaleString('en-IN')} match
+            {quality === 'clean' && ' · hiding non-live, impossible and lead-generation records'}
+          </>
+        }
+        chips={chips}
+        onRemove={(key) => set({ [key]: '' })}
+        onClearAll={() => set(Object.fromEntries(FILTER_KEYS.map((k) => [k, ''])))}
+        warning={inverted ? 'The minimum price is above the maximum, so nothing can match.' : null}
+      />
 
       <div className="grid">
         {slice.map((r) => <ListingCard key={r.listing_id} r={r} flags={data.flags} />)}
       </div>
       {slice.length === 0 && <div className="note">Nothing matches those filters.</div>}
 
-      <div className="pager">
-        <button disabled={clamped <= 1} onClick={() => set({ page: String(clamped - 1) })}>Previous</button>
-        <span className="count">Page {clamped} of {pages}</span>
-        <button disabled={clamped >= pages} onClick={() => set({ page: String(clamped + 1) })}>Next</button>
-      </div>
+      <Pager current={current} pages={pages} total={filtered.length} perPage={PER_PAGE}
+        onPage={(n) => set({ page: String(n) })} />
     </main>
   );
 }

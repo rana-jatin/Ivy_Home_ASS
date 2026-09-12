@@ -68,8 +68,8 @@ await page.waitForTimeout(400);
 const after = await page.textContent('main > p.muted');
 step('locality + bedroom filter changes the result count', before !== after, `${(before ?? '').trim()} -> ${(after ?? '').trim()}`);
 
-// the filter the server ignores
-await page.fill('#f-max', '6000000');
+// the filter the server ignores. The inputs take lakh: 60 is ₹60,00,000.
+await page.fill('#f-max', '60');
 await page.waitForTimeout(400);
 const priced = await page.textContent('main > p.muted');
 step('max price filters (the server ignores this one)', priced !== after, (priced ?? '').trim());
