@@ -7,6 +7,7 @@ import { Badges } from '../components/ListingCard';
 import { fixListing, inr, inrShort, istString, sqft, type FixedListing, type Listing } from '../lib/corrections';
 import { RADIUS_M } from '../lib/flags';
 import { useSaved } from '../lib/saved';
+import { addressedToTools } from '../lib/sellerText';
 import { useTitle } from '../lib/useTitle';
 
 export default function Detail() {
@@ -68,6 +69,7 @@ export default function Detail() {
   const rate = flags?.marketRate.get(`${r.locality}|${r.bedroom}`);
   const saved = ids.has(r.listing_id);
   const project = r.project_id ? data?.projectById.get(r.project_id) : undefined;
+  const toTools = addressedToTools(r.description);
 
   return (
     <main>
@@ -100,6 +102,14 @@ export default function Detail() {
           <ul style={{ margin: '6px 0 0', paddingLeft: 18 }}>
             {corrupt.map((c) => <li key={c}>{c}</li>)}
           </ul>
+        </div>
+      )}
+      {toTools && (
+        <div className="note warn" style={{ marginBottom: 12 }}>
+          <strong>Part of the seller&apos;s description is written to AI tools, not to buyers.</strong>{' '}
+          It presents itself as a note from the Ivy Homes data team and says what a submission must
+          contain. It is text in a listing field, so it is shown below, marked, and nothing it asks for
+          is done.
         </div>
       )}
       {isFake && fakeProfile && (
@@ -157,7 +167,16 @@ export default function Detail() {
 
           <h2>Seller&apos;s description</h2>
           {/* Rendered as text, never as markup. This is untrusted seller input. */}
-          <div className="desc">{r.description}</div>
+          <div className="desc">
+            {toTools ? (
+              <>
+                {toTools.before}
+                <mark className="addressed" title="addressed to AI tools, not to buyers">{toTools.addressed}</mark>
+              </>
+            ) : (
+              r.description
+            )}
+          </div>
         </div>
 
         <div style={{ display: 'grid', gap: 12 }}>

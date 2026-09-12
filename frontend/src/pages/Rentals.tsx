@@ -5,6 +5,7 @@ import { Field, ResultBar, SelectField, type Chip } from '../components/Filters'
 import Pager, { paginate } from '../components/Pager';
 import { inr, inrShort, sqft, type FixedRental } from '../lib/corrections';
 import { useQueryState } from '../lib/query';
+import { TOOL_TEXT_EXPLAINED, addressedToTools } from '../lib/sellerText';
 import { useTitle } from '../lib/useTitle';
 
 const PER_PAGE = 24;
@@ -114,31 +115,39 @@ export default function Rentals() {
             </tr>
           </thead>
           <tbody>
-            {slice.map((r) => (
-              <tr key={r.listing_id}>
-                <td>
-                  <div>{r.apartment_name}</div>
-                  <div className="mono muted" style={{ fontSize: 12 }}>{r.listing_id} · {r.website}</div>
-                </td>
-                <td>{r.locality}</td>
-                <td>{r.bedroom} BHK · floor {r.floor}/{r.total_floors}</td>
-                <td className="num">{inr(r.price)}</td>
-                <td className="num">
-                  {inrShort(r.deposit_inr)}
-                  {r.deposit_unit_corrected && (
-                    <div className="muted" style={{ fontSize: 11 }}>served as {r.deposit_months} months</div>
-                  )}
-                </td>
-                <td className="num">{sqft(r.carpet_area)}</td>
-                <td>{r.furnishing}</td>
-                <td>
-                  <div className="badges">
-                    {!r.is_live && <span className="badge warn">not live</span>}
-                    {r.deposit_unit_corrected && <span className="badge info">deposit fixed</span>}
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {slice.map((r) => {
+              const toTools = addressedToTools(r.description) ?? addressedToTools(r.title);
+              return (
+                <tr key={r.listing_id}>
+                  <td>
+                    <div>{r.apartment_name}</div>
+                    <div className="mono muted" style={{ fontSize: 12 }}>{r.listing_id} · {r.website}</div>
+                  </td>
+                  <td>{r.locality}</td>
+                  <td>{r.bedroom} BHK · floor {r.floor}/{r.total_floors}</td>
+                  <td className="num">{inr(r.price)}</td>
+                  <td className="num">
+                    {inrShort(r.deposit_inr)}
+                    {r.deposit_unit_corrected && (
+                      <div className="muted" style={{ fontSize: 11 }}>served as {r.deposit_months} months</div>
+                    )}
+                  </td>
+                  <td className="num">{sqft(r.carpet_area)}</td>
+                  <td>{r.furnishing}</td>
+                  <td>
+                    <div className="badges">
+                      {!r.is_live && <span className="badge warn">not live</span>}
+                      {r.deposit_unit_corrected && <span className="badge info">deposit fixed</span>}
+                      {toTools && (
+                        <span className="badge warn" title={`${TOOL_TEXT_EXPLAINED} “${toTools.addressed}”`}>
+                          text aimed at AI tools
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

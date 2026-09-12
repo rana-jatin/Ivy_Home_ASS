@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { inrShort, sqft, type FixedListing } from '../lib/corrections';
 import type { Flags } from '../lib/flags';
 import { useSaved } from '../lib/saved';
+import { TOOL_TEXT_EXPLAINED, addressedToTools } from '../lib/sellerText';
 
 /** Record badges. Without flags - the city still downloading - only the ones a single record can show. */
 export function Badges({ r, flags }: { r: FixedListing; flags?: Flags }) {
@@ -19,6 +20,7 @@ export function Badges({ r, flags }: { r: FixedListing; flags?: Flags }) {
       {dupes && <span className="badge dup" title={dupes.join(', ')}>+{dupes.length} duplicate{dupes.length > 1 ? 's' : ''}</span>}
       {r.area_unit_corrected && <span className="badge info" title={`Served as ${r.carpet_area} m²; converted to square feet.`}>area from m²</span>}
       {r.coords_swapped && <span className="badge bad" title="latitude and longitude were transposed">coords swapped</span>}
+      {addressedToTools(r.description) && <span className="badge warn" title={TOOL_TEXT_EXPLAINED}>text aimed at AI tools</span>}
       {r.is_verified && <span className="badge good">verified</span>}
     </div>
   );
