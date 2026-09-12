@@ -1,12 +1,13 @@
 import { getSession } from '../api/client';
 import { useDataset } from '../api/store';
+import DataPending from '../components/DataPending';
 import ListingCard from '../components/ListingCard';
 import { useSaved } from '../lib/saved';
 
 export default function Saved() {
   const data = useDataset();
   const { ids, loading, error, refresh } = useSaved();
-  if (!data) return null;
+  if (!data) return <DataPending />;
 
   const rows = data.listings.filter((r) => ids.has(r.listing_id));
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { api } from '../api/client';
-import { useDataset } from '../api/store';
+import { ApiError, api } from '../api/client';
+import { useData, useDataset } from '../api/store';
 import { Badges } from '../components/ListingCard';
 import { fixListing, inr, inrShort, istString, sqft, type FixedListing, type Listing } from '../lib/corrections';
 import { RADIUS_M } from '../lib/flags';
@@ -9,45 +9,62 @@ import { useSaved } from '../lib/saved';
 
 export default function Detail() {
   const { id = '' } = useParams();
+  const state = useData();
   const data = useDataset();
   const { ids, toggle } = useSaved();
   const [fetched, setFetched] = useState<FixedListing | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  const fromSnapshot = data?.listings.find((r) => r.listing_id === id) ?? null;
+  const fromSnapshot = data?.listingById.get(id) ?? null;
 
-  // The detail page is reachable by URL on its own, so if the id is not in the
-  // snapshot fetch it directly. Documented as /v1/listing/{id}, which 404s -
-  // the real path is the plural one.
+  // The page is reachable by URL on its own, so it does not wait for the city
+  // to finish downloading: while the pull runs, or if the id is not in the copy
+  // on screen, it fetches the one record. Documented as /v1/listing/{id}, which
+  // 404s - the real path is the plural one.
+  const direct = !!id && !fromSnapshot && ['loading', 'ready', 'error'].includes(state.status);
   useEffect(() => {
-    if (fromSnapshot || !id) return;
+    if (!direct) return;
     let dead = false;
+    setError(null);
     api<Listing>(`/v1/listings/${encodeURIComponent(id)}`)
       .then((r) => !dead && setFetched(fixListing(r)))
-      .catch((e) => !dead && setError(e?.message ?? String(e)));
+      .catch((e) => !dead && setError(e instanceof Error ? e : new Error(String(e))));
     return () => { dead = true; };
-  }, [id, fromSnapshot]);
+  }, [id, direct]);
 
-  const r = fromSnapshot ?? fetched;
+  const r = fromSnapshot ?? (fetched?.listing_id === id ? fetched : null);
 
-  if (error) {
+  if (!r && error) {
+    const missing = error instanceof ApiError && error.status === 404;
     return (
       <main>
         <p><Link to="/listings">← Listings</Link></p>
-        <div className="note bad">{error}</div>
+        {missing ? (
+          <>
+            <h1>No such listing</h1>
+            <p className="sub">
+              The API has no listing <span className="mono">{id}</span> in this city. It may have been
+              taken down, or the link may be mistyped.
+            </p>
+          </>
+        ) : (
+          <div className="note bad">{error.message}</div>
+        )}
       </main>
     );
   }
-  if (!r || !data) return <main><p className="muted">Loading…</p></main>;
+  if (!r) return <main><p className="muted">Loading…</p></main>;
 
-  const { flags } = data;
-  const dupes = flags.duplicatesOf.get(r.listing_id) ?? [];
-  const corrupt = flags.corrupt.get(r.listing_id) ?? [];
-  const isFake = flags.fakeIds.has(r.listing_id);
-  const fakeProfile = flags.fakeProfiles.get(r.posted_by_contact);
-  const rate = flags.marketRate.get(`${r.locality}|${r.bedroom}`);
+  // Everything below the record itself - duplicates, impossibility, lead
+  // generation, the market rate - needs the whole city, so it waits for it.
+  const flags = data?.flags;
+  const dupes = flags?.duplicatesOf.get(r.listing_id) ?? [];
+  const corrupt = flags?.corrupt.get(r.listing_id) ?? [];
+  const isFake = flags?.fakeIds.has(r.listing_id) ?? false;
+  const fakeProfile = flags?.fakeProfiles.get(r.posted_by_contact);
+  const rate = flags?.marketRate.get(`${r.locality}|${r.bedroom}`);
   const saved = ids.has(r.listing_id);
-  const project = data.projects.find((p) => p.project_id === r.project_id);
+  const project = r.project_id ? data?.projectById.get(r.project_id) : undefined;
 
   return (
     <main>
@@ -66,6 +83,13 @@ export default function Detail() {
       </div>
 
       <div style={{ marginBottom: 14 }}><Badges r={r} flags={flags} /></div>
+
+      {!data && (
+        <div className="note" style={{ marginBottom: 12 }}>
+          The checks for duplicates, impossible values and lead generation compare this record with
+          the whole city. They appear here as soon as the download in the header finishes.
+        </div>
+      )}
 
       {corrupt.length > 0 && (
         <div className="note bad" style={{ marginBottom: 12 }}>
@@ -142,7 +166,7 @@ export default function Detail() {
                 differ between copies; the flat does not.
               </p>
               {dupes.map((d) => {
-                const o = data.listings.find((x) => x.listing_id === d);
+                const o = data?.listingById.get(d);
                 if (!o) return null;
                 return (
                   <div key={d} style={{ borderTop: '1px solid var(--line)', paddingTop: 8, marginTop: 8 }}>
@@ -170,7 +194,7 @@ export default function Detail() {
                 <dt>Reported listings</dt>
                 <dd>{project.total_listings}</dd>
                 <dt>Actually live</dt>
-                <dd>{data.listings.filter((x) => x.project_id === project.project_id && x.is_live).length}</dd>
+                <dd>{(data?.listingsByProject.get(project.project_id) ?? []).filter((x) => x.is_live).length}</dd>
               </dl>
             </div>
           )}

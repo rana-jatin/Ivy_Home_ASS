@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import DataPending from '../components/DataPending';
 import ListingCard from '../components/ListingCard';
 import { selectListings } from '../lib/browse';
 
@@ -53,7 +54,7 @@ export default function Browse() {
     [data, locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe],
   );
 
-  if (!data) return null;
+  if (!data) return <DataPending />;
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const clamped = Math.min(page, pages);
   const slice = filtered.slice((clamped - 1) * PER_PAGE, clamped * PER_PAGE);

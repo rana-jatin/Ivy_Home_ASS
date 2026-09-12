@@ -9,6 +9,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import DataPending from '../components/DataPending';
 import { OFFLINE_SORT_TEST, REFERENCE, inr, inrShort, type FixedListing } from '../lib/corrections';
 import { AREA_TOL, RADIUS_M, corruptSummary } from '../lib/flags';
 
@@ -154,7 +155,7 @@ export default function Insights() {
     };
   }, [data]);
 
-  if (!data || !stats) return null;
+  if (!data || !stats) return <DataPending />;
   const { flags, declaredTotals } = data;
   const maxLoc = Math.max(...stats.byLocality.map((l) => l.count));
 

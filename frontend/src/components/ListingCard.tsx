@@ -3,14 +3,15 @@ import { inrShort, sqft, type FixedListing } from '../lib/corrections';
 import type { Flags } from '../lib/flags';
 import { useSaved } from '../lib/saved';
 
-export function Badges({ r, flags }: { r: FixedListing; flags: Flags }) {
-  const corrupt = flags.corrupt.get(r.listing_id);
-  const dupes = flags.duplicatesOf.get(r.listing_id);
+/** Record badges. Without flags - the city still downloading - only the ones a single record can show. */
+export function Badges({ r, flags }: { r: FixedListing; flags?: Flags }) {
+  const corrupt = flags?.corrupt.get(r.listing_id);
+  const dupes = flags?.duplicatesOf.get(r.listing_id);
   return (
     <div className="badges">
       {!r.is_live && <span className="badge warn" title="is_live is false. The docs say these are excluded server side; they are not.">not live</span>}
       {corrupt && <span className="badge bad" title={corrupt.join('; ')}>impossible: {corrupt[0]}</span>}
-      {flags.fakeIds.has(r.listing_id) && (
+      {flags?.fakeIds.has(r.listing_id) && (
         <span className="badge bad" title={`One of ${flags.fakeIds.size} listings on ${flags.fakeContacts.size} lead-generation phone numbers.`}>
           lead-gen
         </span>

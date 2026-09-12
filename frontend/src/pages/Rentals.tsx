@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import DataPending from '../components/DataPending';
 import { inr, inrShort, sqft } from '../lib/corrections';
 
 const PER_PAGE = 24;
@@ -39,7 +40,7 @@ export default function Rentals() {
       .sort((a, b) => a.price - b.price);
   }, [data, locality, bedroom, furnishing, maxRent]);
 
-  if (!data) return null;
+  if (!data) return <DataPending />;
   const correctedRecords = data.rentals.filter((r) => r.deposit_unit_corrected);
   const corrected = correctedRecords.length;
   const correctedSites = [...new Set(correctedRecords.map((r) => r.website))].sort();

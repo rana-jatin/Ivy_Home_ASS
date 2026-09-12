@@ -10,6 +10,9 @@
 const BASE = import.meta.env.VITE_IVY_BASE_URL ?? 'https://solve.ivy.homes';
 const API_KEY = import.meta.env.VITE_IVY_API_KEY ?? '';
 
+/** The dataset is scoped to the API key, not the user: every demo account sees the same city. */
+export const DATASET_KEY = `${BASE}|${API_KEY}`;
+
 export type Session = {
   access_token: string;
   refresh_token: string;

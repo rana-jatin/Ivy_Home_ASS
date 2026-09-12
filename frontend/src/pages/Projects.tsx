@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import DataPending from '../components/DataPending';
 import { inrShort, sqft } from '../lib/corrections';
 
 const PER_PAGE = 25;
@@ -48,7 +49,7 @@ export default function Projects() {
       .sort(cmp[sort] ?? cmp.price_desc);
   }, [data, locality, status, only, sort, liveCount]);
 
-  if (!data) return null;
+  if (!data) return <DataPending />;
   const wrong = data.projects.filter((p) => (liveCount.get(p.project_id) ?? 0) !== p.total_listings).length;
   const localities = [...new Set(data.projects.map((p) => p.locality))].sort();
   const pages = Math.max(1, Math.ceil(rows.length / PER_PAGE));

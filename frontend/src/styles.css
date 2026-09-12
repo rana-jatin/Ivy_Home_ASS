@@ -130,3 +130,13 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 820px) { .cols { grid-template-columns: 1fr; } }
 .muted { color: var(--muted); }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+
+/* ---- data status in the header ---- */
+.datastatus { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.bad-text { color: var(--bad); }
+button.linkish {
+  background: none; border: 0; padding: 0; color: var(--accent); font-size: inherit; cursor: pointer;
+}
+button.linkish:hover { text-decoration: underline; }
+.pullbar { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; overflow: hidden; }
+.pullbar > i { display: block; height: 100%; background: var(--accent); transition: width .2s ease; }
