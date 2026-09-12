@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { BackLink } from '../components/Navigation';
 import { ApiError, api } from '../api/client';
 import { useData, useDataset } from '../api/store';
 import { Badges } from '../components/ListingCard';
@@ -38,7 +39,7 @@ export default function Detail() {
     const missing = error instanceof ApiError && error.status === 404;
     return (
       <main>
-        <p><Link to="/listings">← Listings</Link></p>
+        <BackLink to="/listings" label="Listings" />
         {missing ? (
           <>
             <h1>No such listing</h1>
@@ -68,7 +69,7 @@ export default function Detail() {
 
   return (
     <main>
-      <p><Link to="/listings">← Listings</Link></p>
+      <BackLink to="/listings" label="Listings" />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <div>

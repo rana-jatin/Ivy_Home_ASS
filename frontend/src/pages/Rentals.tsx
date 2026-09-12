@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import { useQueryState } from '../lib/query';
 import DataPending from '../components/DataPending';
 import { inr, inrShort, sqft } from '../lib/corrections';
 
@@ -8,14 +8,7 @@ const PER_PAGE = 24;
 
 export default function Rentals() {
   const data = useDataset();
-  const [params, setParams] = useSearchParams();
-  const get = (k: string, d = '') => params.get(k) ?? d;
-  const set = (k: string, v: string) => {
-    const next = new URLSearchParams(params);
-    if (v) next.set(k, v); else next.delete(k);
-    if (k !== 'page') next.delete('page');
-    setParams(next, { replace: true });
-  };
+  const { get, set } = useQueryState();
 
   const locality = get('locality');
   const bedroom = get('bedroom');
@@ -61,21 +54,21 @@ export default function Rentals() {
       <div className="filters">
         <div>
           <label htmlFor="r-loc">Locality</label>
-          <select id="r-loc" value={locality} onChange={(e) => set('locality', e.target.value)}>
+          <select id="r-loc" value={locality} onChange={(e) => set({ locality: e.target.value })}>
             <option value="">Any</option>
             {localities.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
         </div>
         <div>
           <label htmlFor="r-bed">Bedrooms</label>
-          <select id="r-bed" value={bedroom} onChange={(e) => set('bedroom', e.target.value)}>
+          <select id="r-bed" value={bedroom} onChange={(e) => set({ bedroom: e.target.value })}>
             <option value="">Any</option>
             {[1, 2, 3, 4].map((b) => <option key={b} value={b}>{b} BHK</option>)}
           </select>
         </div>
         <div>
           <label htmlFor="r-furn">Furnishing</label>
-          <select id="r-furn" value={furnishing} onChange={(e) => set('furnishing', e.target.value)}>
+          <select id="r-furn" value={furnishing} onChange={(e) => set({ furnishing: e.target.value })}>
             <option value="">Any</option>
             <option value="unfurnished">unfurnished</option>
             <option value="semi-furnished">semi-furnished</option>
@@ -84,7 +77,7 @@ export default function Rentals() {
         </div>
         <div>
           <label htmlFor="r-max">Max monthly rent ₹</label>
-          <input id="r-max" type="number" value={maxRent} onChange={(e) => set('max_rent', e.target.value)} placeholder="no limit" />
+          <input id="r-max" type="number" value={maxRent} onChange={(e) => set({ max_rent: e.target.value }, { replace: true })} placeholder="no limit" />
         </div>
       </div>
 
@@ -131,9 +124,9 @@ export default function Rentals() {
       {slice.length === 0 && <div className="note">Nothing matches those filters.</div>}
 
       <div className="pager">
-        <button disabled={clamped <= 1} onClick={() => set('page', String(clamped - 1))}>Previous</button>
+        <button disabled={clamped <= 1} onClick={() => set({ page: String(clamped - 1) })}>Previous</button>
         <span className="count">Page {clamped} of {pages}</span>
-        <button disabled={clamped >= pages} onClick={() => set('page', String(clamped + 1))}>Next</button>
+        <button disabled={clamped >= pages} onClick={() => set({ page: String(clamped + 1) })}>Next</button>
       </div>
     </main>
   );

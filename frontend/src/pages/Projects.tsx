@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import { useQueryState } from '../lib/query';
 import DataPending from '../components/DataPending';
 import { inrShort, sqft } from '../lib/corrections';
 
@@ -8,14 +9,7 @@ const PER_PAGE = 25;
 
 export default function Projects() {
   const data = useDataset();
-  const [params, setParams] = useSearchParams();
-  const get = (k: string, d = '') => params.get(k) ?? d;
-  const set = (k: string, v: string) => {
-    const next = new URLSearchParams(params);
-    if (v) next.set(k, v); else next.delete(k);
-    if (k !== 'page') next.delete('page');
-    setParams(next, { replace: true });
-  };
+  const { get, set } = useQueryState();
 
   const locality = get('locality');
   const status = get('status');
@@ -68,14 +62,14 @@ export default function Projects() {
       <div className="filters">
         <div>
           <label htmlFor="p-loc">Locality</label>
-          <select id="p-loc" value={locality} onChange={(e) => set('locality', e.target.value)}>
+          <select id="p-loc" value={locality} onChange={(e) => set({ locality: e.target.value })}>
             <option value="">Any</option>
             {localities.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
         </div>
         <div>
           <label htmlFor="p-st">Status</label>
-          <select id="p-st" value={status} onChange={(e) => set('status', e.target.value)}>
+          <select id="p-st" value={status} onChange={(e) => set({ status: e.target.value })}>
             <option value="">Any</option>
             <option value="new launch">new launch</option>
             <option value="under construction">under construction</option>
@@ -84,14 +78,14 @@ export default function Projects() {
         </div>
         <div>
           <label htmlFor="p-only">Listing count</label>
-          <select id="p-only" value={only} onChange={(e) => set('only', e.target.value)}>
+          <select id="p-only" value={only} onChange={(e) => set({ only: e.target.value })}>
             <option value="">All projects</option>
             <option value="wrong">Only those reporting it wrong</option>
           </select>
         </div>
         <div>
           <label htmlFor="p-sort">Sort</label>
-          <select id="p-sort" value={sort} onChange={(e) => set('sort', e.target.value)}>
+          <select id="p-sort" value={sort} onChange={(e) => set({ sort: e.target.value })}>
             <option value="price_desc">Highest maximum price</option>
             <option value="price_asc">Lowest starting price</option>
             <option value="launch_desc">Most recently launched</option>
@@ -145,9 +139,9 @@ export default function Projects() {
       </div>
 
       <div className="pager">
-        <button disabled={clamped <= 1} onClick={() => set('page', String(clamped - 1))}>Previous</button>
+        <button disabled={clamped <= 1} onClick={() => set({ page: String(clamped - 1) })}>Previous</button>
         <span className="count">Page {clamped} of {pages}</span>
-        <button disabled={clamped >= pages} onClick={() => set('page', String(clamped + 1))}>Next</button>
+        <button disabled={clamped >= pages} onClick={() => set({ page: String(clamped + 1) })}>Next</button>
       </div>
 
       <p className="muted" style={{ fontSize: 13 }}>

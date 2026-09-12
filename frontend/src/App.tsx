@@ -3,6 +3,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { getSession, logout, onSessionChange } from './api/client';
 import { DataProvider, useData } from './api/store';
 import { DataStatus, PullBar } from './components/DataStatus';
+import { ScrollManager } from './components/Navigation';
 import { SavedProvider } from './lib/saved';
 import Login from './pages/Login';
 import Browse from './pages/Browse';
@@ -38,6 +39,7 @@ function Chrome() {
       </header>
       {/* Routes render while the city is still downloading: a listing opened by
           URL fetches itself, and every other screen shows the pull's progress. */}
+      <ScrollManager />
       <Routes>
         <Route path="/" element={<Navigate to="/listings" replace />} />
         <Route path="/listings" element={<Browse />} />

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { useDataset } from '../api/store';
+import { useQueryState } from '../lib/query';
 import DataPending from '../components/DataPending';
 import ListingCard from '../components/ListingCard';
 import { selectListings } from '../lib/browse';
@@ -13,16 +13,7 @@ const PER_PAGE = 24;
 // panel behaves consistently instead of half of it silently doing nothing.
 export default function Browse() {
   const data = useDataset();
-  const [params, setParams] = useSearchParams();
-
-  const get = (k: string, d = '') => params.get(k) ?? d;
-  const set = (k: string, v: string) => {
-    const next = new URLSearchParams(params);
-    if (v) next.set(k, v);
-    else next.delete(k);
-    if (k !== 'page') next.delete('page');
-    setParams(next, { replace: true });
-  };
+  const { get, set } = useQueryState();
 
   const locality = get('locality');
   const bedroom = get('bedroom');
@@ -71,21 +62,21 @@ export default function Browse() {
       <div className="filters">
         <div>
           <label htmlFor="f-loc">Locality</label>
-          <select id="f-loc" value={locality} onChange={(e) => set('locality', e.target.value)}>
+          <select id="f-loc" value={locality} onChange={(e) => set({ locality: e.target.value })}>
             <option value="">Any</option>
             {localities.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
         </div>
         <div>
           <label htmlFor="f-bed">Bedrooms</label>
-          <select id="f-bed" value={bedroom} onChange={(e) => set('bedroom', e.target.value)}>
+          <select id="f-bed" value={bedroom} onChange={(e) => set({ bedroom: e.target.value })}>
             <option value="">Any</option>
             {[0, 1, 2, 3, 4, 5].map((b) => <option key={b} value={b}>{b} BHK</option>)}
           </select>
         </div>
         <div>
           <label htmlFor="f-furn">Furnishing</label>
-          <select id="f-furn" value={furnishing} onChange={(e) => set('furnishing', e.target.value)}>
+          <select id="f-furn" value={furnishing} onChange={(e) => set({ furnishing: e.target.value })}>
             <option value="">Any</option>
             <option value="unfurnished">unfurnished</option>
             <option value="semi-furnished">semi-furnished</option>
@@ -94,7 +85,7 @@ export default function Browse() {
         </div>
         <div>
           <label htmlFor="f-type">Type</label>
-          <select id="f-type" value={propertyType} onChange={(e) => set('property_type', e.target.value)}>
+          <select id="f-type" value={propertyType} onChange={(e) => set({ property_type: e.target.value })}>
             <option value="">Any</option>
             {types.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
@@ -102,16 +93,16 @@ export default function Browse() {
         <div>
           <label htmlFor="f-min">Min price ₹</label>
           <input id="f-min" type="number" inputMode="numeric" value={minPrice}
-            onChange={(e) => set('min_price', e.target.value)} placeholder="0" />
+            onChange={(e) => set({ min_price: e.target.value }, { replace: true })} placeholder="0" />
         </div>
         <div>
           <label htmlFor="f-max">Max price ₹</label>
           <input id="f-max" type="number" inputMode="numeric" value={maxPrice}
-            onChange={(e) => set('max_price', e.target.value)} placeholder="no limit" />
+            onChange={(e) => set({ max_price: e.target.value }, { replace: true })} placeholder="no limit" />
         </div>
         <div>
           <label htmlFor="f-q">Show</label>
-          <select id="f-q" value={quality} onChange={(e) => set('quality', e.target.value)}>
+          <select id="f-q" value={quality} onChange={(e) => set({ quality: e.target.value })}>
             <option value="clean">Live, genuine only</option>
             <option value="all">Everything the API returns</option>
             <option value="flagged">Only flagged records</option>
@@ -119,7 +110,7 @@ export default function Browse() {
         </div>
         <div>
           <label htmlFor="f-sort">Sort</label>
-          <select id="f-sort" value={sort} onChange={(e) => set('sort', e.target.value)}>
+          <select id="f-sort" value={sort} onChange={(e) => set({ sort: e.target.value })}>
             <option value="posted_desc">Newest first</option>
             <option value="posted_asc">Oldest first</option>
             <option value="price_asc">Price, low to high</option>
@@ -130,7 +121,7 @@ export default function Browse() {
         </div>
         <div>
           <label htmlFor="f-dd">Duplicates</label>
-          <select id="f-dd" value={dedupe ? '1' : ''} onChange={(e) => set('dedupe', e.target.value)}>
+          <select id="f-dd" value={dedupe ? '1' : ''} onChange={(e) => set({ dedupe: e.target.value })}>
             <option value="">Show every record</option>
             <option value="1">One per property</option>
           </select>
@@ -148,9 +139,9 @@ export default function Browse() {
       {slice.length === 0 && <div className="note">Nothing matches those filters.</div>}
 
       <div className="pager">
-        <button disabled={clamped <= 1} onClick={() => set('page', String(clamped - 1))}>Previous</button>
+        <button disabled={clamped <= 1} onClick={() => set({ page: String(clamped - 1) })}>Previous</button>
         <span className="count">Page {clamped} of {pages}</span>
-        <button disabled={clamped >= pages} onClick={() => set('page', String(clamped + 1))}>Next</button>
+        <button disabled={clamped >= pages} onClick={() => set({ page: String(clamped + 1) })}>Next</button>
       </div>
     </main>
   );
