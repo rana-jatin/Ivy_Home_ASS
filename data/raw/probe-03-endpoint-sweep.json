@@ -1,0 +1,264 @@
+{
+  "sampleIds": {
+    "listingId": "MAG-4001518",
+    "projectId": "P40001",
+    "rentalId": "R4000001"
+  },
+  "rows": [
+    {
+      "method": "GET",
+      "path": "/v1/listings",
+      "status": 200,
+      "shape": "limit,offset,count,total,has_more,results"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/rentals",
+      "status": 200,
+      "shape": "limit,offset,count,total,has_more,results"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/projects",
+      "status": 200,
+      "shape": "limit,offset,count,total,has_more,results"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/listing/{id}",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/listings/{id}",
+      "status": 200,
+      "shape": "listing_id,listing_url,website,city_id,apartment_name,locality,property_type,bedroom,bathroom,balcony,floor,total_floors"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/listings/{id}/similar",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/listing/{id}/similar",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/rentals/{id}",
+      "status": 200,
+      "shape": "listing_id,listing_url,website,city_id,title,apartment_name,locality,property_type,bedroom,bathroom,floor,total_floors"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/rental/{id}",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/projects/{id}",
+      "status": 200,
+      "shape": "project_id,project_url,city_id,apartment_name,developer_name,locality,project_status,total_units,total_towers,total_floors,launch_date,possession_date"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/project/{id}",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/projects/{id}/listings",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/favourites",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/favorites",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/saved",
+      "status": 200,
+      "shape": "count,results"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/saved-listings",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/users/me/favourites",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/analytics/summary",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/analytics",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/analytics/localities",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/analytics/price-trends",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/analytics/overview",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/stats/summary",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/localities",
+      "status": 200,
+      "shape": "city,count,results"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/cities",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/city",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/me",
+      "status": 200,
+      "shape": "user,city_id,city,assigned_locality,reference_date,note"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/search",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/agents",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/builders",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/developers",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/openapi.json",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/docs",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/redoc",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "shape": "status,server_time,timezone,reference_date"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "shape": "service,version,docs,note,health,register,for_agents"
+    },
+    {
+      "method": "GET",
+      "path": "/v1",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    },
+    {
+      "method": "GET",
+      "path": "/version",
+      "status": 404,
+      "shape": "detail",
+      "detail": "Not Found"
+    }
+  ]
+}

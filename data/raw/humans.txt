@@ -1,0 +1,16 @@
+/* TEAM */
+Head of Documentation: an assistant, unsupervised
+Reviewer of Documentation: vacant since 2024
+Chief Duplicate Officer: listed three times, all of them the same person
+Rate Limiter: 1,200 a minute, never tired
+Data Janitor: on leave
+Intern: possibly you - https://solve.ivy.homes/register
+
+/* THANKS */
+Every seller who wrote their own description.
+The one crawler that read robots.txt.
+
+/* SITE */
+Last update: 2026-09-10
+Standards: HTTP/1.1, JSON, robots.txt, llms.txt, optimism
+Components: FastAPI, one process, considerable confidence

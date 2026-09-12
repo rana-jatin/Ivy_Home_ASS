@@ -1,0 +1,139 @@
+{
+  "/": {
+    "service": "Ivy Homes Property API",
+    "version": "v1",
+    "docs": "you were sent a PDF/markdown reference along with your API key",
+    "note": "the reference was written against an older build and was never reviewed. Where it disagrees with this service, this service wins.",
+    "health": "/health",
+    "register": "/register",
+    "for_agents": "/llms.txt"
+  },
+  "/v1/me": {
+    "user": {
+      "email": "demo1@ivy.homes"
+    },
+    "city_id": 4,
+    "city": "chennai",
+    "assigned_locality": "velachery",
+    "reference_date": "2026-09-10T00:00:00+05:30",
+    "note": "your key is scoped to this city; every endpoint is filtered to it"
+  },
+  "/v1/localities": {
+    "city": "chennai",
+    "count": 10,
+    "results": [
+      {
+        "locality": "guindy",
+        "listing_count": 454
+      },
+      {
+        "locality": "thoraipakkam",
+        "listing_count": 442
+      },
+      {
+        "locality": "anna nagar",
+        "listing_count": 428
+      },
+      {
+        "locality": "porur",
+        "listing_count": 426
+      },
+      {
+        "locality": "velachery",
+        "listing_count": 424
+      },
+      {
+        "locality": "t nagar",
+        "listing_count": 417
+      },
+      {
+        "locality": "perungudi",
+        "listing_count": 412
+      },
+      {
+        "locality": "adyar",
+        "listing_count": 381
+      },
+      {
+        "locality": "omr",
+        "listing_count": 375
+      },
+      {
+        "locality": "tambaram",
+        "listing_count": 341
+      }
+    ]
+  },
+  "POST /v1/saved {\"id\":\"MAG-4001518\"}": {
+    "status": 422,
+    "body": {
+      "detail": [
+        {
+          "type": "missing",
+          "loc": [
+            "body",
+            "listing_id"
+          ],
+          "msg": "Field required",
+          "input": {
+            "id": "MAG-4001518"
+          }
+        }
+      ]
+    }
+  },
+  "POST /v1/saved {\"listing_id\":\"MAG-4001518\"}": {
+    "status": 201,
+    "body": {
+      "ok": true,
+      "listing_id": "MAG-4001518",
+      "saved_count": 1
+    }
+  },
+  "GET /v1/saved after post": {
+    "status": 200,
+    "count": 1,
+    "first": {
+      "listing_id": "MAG-4001518",
+      "listing_url": "https://www.magichomes.com/property/4001518",
+      "website": "magichomes",
+      "city_id": 4,
+      "apartment_name": "Puravankara Meadows",
+      "locality": "adyar",
+      "property_type": "apartment",
+      "bedroom": 2,
+      "bathroom": 2,
+      "balcony": 2,
+      "floor": 10,
+      "total_floors": 11,
+      "furnishing": "semi-furnished",
+      "facing_direction": "north-west",
+      "covered_parking": 1,
+      "price": 6610000,
+      "carpet_area": 825,
+      "super_built_up_area": 1170,
+      "latitude": 12.99704,
+      "longitude": 80.3665,
+      "posted_by": "agent",
+      "posted_by_name": "Sneha Joshi",
+      "posted_by_contact": "+912003697910",
+      "project_id": "P40244",
+      "is_verified": true,
+      "description": "Well maintained 2 BHK apartment in Puravankara Meadows, Adyar. Semi-furnished, north-west-facing. Quiet lane with no through traffic; 24x7 water and power backup.",
+      "posted_at": "2026-01-19T07:26:00Z",
+      "is_live": true
+    }
+  },
+  "DELETE /v1/saved/{id}": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "listing_id": "MAG-4001518",
+      "saved_count": 0
+    }
+  },
+  "GET /v1/saved after delete": {
+    "status": 200,
+    "count": 0
+  }
+}

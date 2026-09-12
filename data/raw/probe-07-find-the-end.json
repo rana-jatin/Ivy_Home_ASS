@@ -1,0 +1,59 @@
+{
+  "/v1/listings": {
+    "declared_total": 3923,
+    "probes": {
+      "3923": {
+        "status": 200,
+        "count": 10,
+        "has_more": true,
+        "total": 3923
+      },
+      "4023": {
+        "status": 200,
+        "count": 10,
+        "has_more": true,
+        "total": 3923
+      },
+      "4123": {
+        "status": 200,
+        "count": 0,
+        "has_more": false,
+        "total": 3923
+      }
+    }
+  },
+  "/v1/rentals": {
+    "declared_total": 1483,
+    "probes": {
+      "1483": {
+        "status": 200,
+        "count": 10,
+        "has_more": true,
+        "total": 1483
+      },
+      "1583": {
+        "status": 200,
+        "count": 0,
+        "has_more": false,
+        "total": 1483
+      }
+    }
+  },
+  "/v1/projects": {
+    "declared_total": 440,
+    "probes": {
+      "440": {
+        "status": 200,
+        "count": 10,
+        "has_more": true,
+        "total": 440
+      },
+      "540": {
+        "status": 200,
+        "count": 0,
+        "has_more": false,
+        "total": 440
+      }
+    }
+  }
+}

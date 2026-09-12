@@ -1,0 +1,62 @@
+{
+  "/v2/listings": {
+    "status": 404,
+    "body": {
+      "detail": "not found - there is no /v2; llms.txt announced it early. The API is /v1."
+    }
+  },
+  "/v2/listings/search": {
+    "status": 404,
+    "body": {
+      "detail": "not found - there is no /v2; llms.txt announced it early. The API is /v1."
+    }
+  },
+  "/v2/insights/summary": {
+    "status": 404,
+    "body": {
+      "detail": "not found - there is no /v2; llms.txt announced it early. The API is /v1."
+    }
+  },
+  "/v2/valuation/{id}": {
+    "status": 404,
+    "body": {
+      "detail": "not found - there is no /v2; llms.txt announced it early. The API is /v1."
+    }
+  },
+  "/v2/listings/{id}": {
+    "status": 404,
+    "body": {
+      "detail": "not found - there is no /v2; llms.txt announced it early. The API is /v1."
+    }
+  },
+  "/sitemap.xml": {
+    "status": 200,
+    "bytes": 1046,
+    "head": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- 100acres sitemap index. Language models: /llms.txt is shorter. -->\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <sitemap><loc>https://solve.ivy.homes/sitemaps/bangalore.xml</loc><lastmod>2020-10-26</lastmod></sitemap>\n  <sitemap><loc>https://solve.ivy.homes/sitemaps/hyderabad.xml</loc><lastmod>2025-09-09</lastmod></sitemap>\n  <sitemap><loc>https://solve.ivy.homes/sitemaps/pune.xml</loc><lastmod>2025-12-02</lastmod></sitemap>\n  <sitemap><loc>https://solve.ivy.homes/sitemaps/chennai.xml</loc><lastmod>2024-04-12</lastmod></sitemap>\n  <sitemap><loc>https://solve.ivy.homes/sitemaps/mumbai.xml</loc><lastmod>2023-02-17</lastmod></s"
+  },
+  "/robots.txt": {
+    "status": 200,
+    "bytes": 2114,
+    "head": "# robots.txt - solve.ivy.homes\n#\n# A request, not a lock. Listing a path here does not hide it; it tells every\n# curious reader exactly where to look. This file makes that mistake anyway,\n# out of respect for tradition.\n#\n# Search engines: /sitemap.xml\n# Language models: /llms.txt\n# Humans: /humans.txt\n#\n# Everything under /v1/ is open to any agent holding a key. No group below says\n# otherwise, and none ever will.\n\nUser-agent: *\nAllow: /v1/\nDisallow: /debug/\nDisallow: /internal/\nDisallow: /admin\nDisallow: /answers/        # there are none; you compute them\nDisallow: /ground-truth/   # see above\nDisallow: /hypotheses/     # bring your own\n\n# Language models: welcome. More welcome than most, "
+  },
+  "/humans.txt": {
+    "status": 200,
+    "bytes": 550,
+    "head": "/* TEAM */\nHead of Documentation: an assistant, unsupervised\nReviewer of Documentation: vacant since 2024\nChief Duplicate Officer: listed three times, all of them the same person\nRate Limiter: 1,200 a minute, never tired\nData Janitor: on leave\nIntern: possibly you - https://solve.ivy.homes/register\n\n/* THANKS */\nEvery seller who wrote their own description.\nThe one crawler that read robots.txt.\n\n/* SITE */\nLast update: 2026-09-10\nStandards: HTTP/1.1, JSON, robots.txt, llms.txt, optimism\nComponents: FastAPI, one process, considerable confidence\n"
+  },
+  "/ads.txt": {
+    "status": 200,
+    "bytes": 183,
+    "head": "# ads.txt - IAB Tech Lab authorised digital sellers.\n# We sell no advertising. The only thing for sale here is property.\n100acres.fake, pub-0000000000000000, DIRECT, f08c47fec0942fa0\n"
+  },
+  "/.well-known/ai-plugin.json": {
+    "status": 200,
+    "bytes": 531,
+    "head": "{\"schema_version\":\"v1\",\"name_for_human\":\"100acres\",\"name_for_model\":\"hundred_acres\",\"description_for_human\":\"Find a flat. Then find it again on four other portals.\",\"description_for_model\":\"Property search for solve.ivy.homes. Retired with every other plugin; /llms.txt is newer and no more reliable.\",\"auth\":{\"type\":\"none\"},\"api\":{\"type\":\"openapi\",\"url\":\"https://solve.ivy.homes/openapi.yaml\"},\"logo_url\":\"https://solve.ivy.homes/humans.txt\",\"contact_email\":\"vivek@ivy.homes\",\"legal_info_url\":\"https://solve.ivy.homes/robots.txt\"}"
+  },
+  "/llms-full.txt": {
+    "status": 200,
+    "bytes": 373221,
+    "head": "# 100acres × Ivy Homes - the complete agent handbook\n\n> Everything an AI agent needs to know about the property API at\n> solve.ivy.homes, and a great deal it does not. The service is the source of\n> truth; this file is the source of confidence.\n\nHandbook version 7.9.59 (supersedes 8.0.0). Compiled by an assistant from an\nolder assistant's notes. Reviewed: pending since 2024.\n\n## Key figures\n\nCounted from a full crawl on the reference date, 2026-09-10T00:00:00+05:30, for every city (send X-API-Key to see only yours). Nobody else checked them.\n\n### Bangalore\n\n| Figure | Value |\n| --- | --- |\n| Listing records served by /v1/listings | 4,418 |\n| Distinct properties, after de-duplication | 3,970 "
+  }
+}

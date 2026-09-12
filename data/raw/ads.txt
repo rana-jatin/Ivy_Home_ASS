@@ -1,0 +1,3 @@
+# ads.txt - IAB Tech Lab authorised digital sellers.
+# We sell no advertising. The only thing for sale here is property.
+100acres.fake, pub-0000000000000000, DIRECT, f08c47fec0942fa0

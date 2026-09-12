@@ -1,0 +1,249 @@
+{
+  "listings {}": {
+    "status": 200,
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "count": 20,
+      "total": 3923,
+      "has_more": true,
+      "results": 20
+    },
+    "first_id": "MAG-4001518",
+    "last_id": "100-4001830"
+  },
+  "listings {\"page\":1}": {
+    "status": 200,
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "count": 20,
+      "total": 3923,
+      "has_more": true,
+      "results": 20
+    },
+    "first_id": "MAG-4001518",
+    "last_id": "100-4001830"
+  },
+  "listings {\"page\":2}": {
+    "status": 200,
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "count": 20,
+      "total": 3923,
+      "has_more": true,
+      "results": 20
+    },
+    "first_id": "MAG-4001518",
+    "last_id": "100-4001830"
+  },
+  "listings {\"page\":0}": {
+    "status": 200,
+    "meta": {
+      "limit": 20,
+      "offset": 0,
+      "count": 20,
+      "total": 3923,
+      "has_more": true,
+      "results": 20
+    },
+    "first_id": "MAG-4001518",
+    "last_id": "100-4001830"
+  },
+  "listings {\"page\":3,\"limit\":5}": {
+    "status": 200,
+    "meta": {
+      "limit": 5,
+      "offset": 0,
+      "count": 5,
+      "total": 3923,
+      "has_more": true,
+      "results": 5
+    },
+    "first_id": "MAG-4001518",
+    "last_id": "DWE-4001488"
+  },
+  "listings {\"limit\":5}": {
+    "status": 200,
+    "meta": {
+      "limit": 5,
+      "offset": 0,
+      "count": 5,
+      "total": 3923,
+      "has_more": true,
+      "results": 5
+    },
+    "first_id": "MAG-4001518",
+    "last_id": "DWE-4001488"
+  },
+  "listings {\"limit\":5,\"offset\":5}": {
+    "status": 200,
+    "meta": {
+      "limit": 5,
+      "offset": 5,
+      "count": 5,
+      "total": 3923,
+      "has_more": true,
+      "results": 5
+    },
+    "first_id": "SQU-4003837",
+    "last_id": "100-4001716"
+  },
+  "limit=100": {
+    "status": 200,
+    "meta": {
+      "limit": 50,
+      "offset": 0,
+      "count": 50,
+      "total": 3923,
+      "has_more": true,
+      "results": 50
+    }
+  },
+  "limit=200": {
+    "status": 200,
+    "meta": {
+      "limit": 50,
+      "offset": 0,
+      "count": 50,
+      "total": 3923,
+      "has_more": true,
+      "results": 50
+    }
+  },
+  "limit=201": {
+    "status": 200,
+    "meta": {
+      "limit": 50,
+      "offset": 0,
+      "count": 50,
+      "total": 3923,
+      "has_more": true,
+      "results": 50
+    }
+  },
+  "limit=500": {
+    "status": 200,
+    "meta": {
+      "limit": 50,
+      "offset": 0,
+      "count": 50,
+      "total": 3923,
+      "has_more": true,
+      "results": 50
+    }
+  },
+  "limit=1000": {
+    "status": 200,
+    "meta": {
+      "limit": 50,
+      "offset": 0,
+      "count": 50,
+      "total": 3923,
+      "has_more": true,
+      "results": 50
+    }
+  },
+  "limit=-1": {
+    "status": 422,
+    "meta": {},
+    "detail": [
+      {
+        "type": "greater_than_equal",
+        "loc": [
+          "query",
+          "limit"
+        ],
+        "msg": "Input should be greater than or equal to 1",
+        "input": "-1",
+        "ctx": {
+          "ge": 1
+        }
+      }
+    ]
+  },
+  "limit=0": {
+    "status": 422,
+    "meta": {},
+    "detail": [
+      {
+        "type": "greater_than_equal",
+        "loc": [
+          "query",
+          "limit"
+        ],
+        "msg": "Input should be greater than or equal to 1",
+        "input": "0",
+        "ctx": {
+          "ge": 1
+        }
+      }
+    ]
+  },
+  "offset=3922(total=3923)": {
+    "status": 200,
+    "meta": {
+      "limit": 10,
+      "offset": 3922,
+      "count": 10,
+      "total": 3923,
+      "has_more": true,
+      "results": 10
+    }
+  },
+  "offset=3923(total=3923)": {
+    "status": 200,
+    "meta": {
+      "limit": 10,
+      "offset": 3923,
+      "count": 10,
+      "total": 3923,
+      "has_more": true,
+      "results": 10
+    }
+  },
+  "offset=3973(total=3923)": {
+    "status": 200,
+    "meta": {
+      "limit": 10,
+      "offset": 3973,
+      "count": 10,
+      "total": 3923,
+      "has_more": true,
+      "results": 10
+    }
+  },
+  "total /v1/listings": {
+    "limit": 1,
+    "offset": 0,
+    "count": 1,
+    "total": 3923,
+    "has_more": true,
+    "results": 1
+  },
+  "total /v1/rentals": {
+    "limit": 1,
+    "offset": 0,
+    "count": 1,
+    "total": 1483,
+    "has_more": true,
+    "results": 1
+  },
+  "total /v1/projects": {
+    "limit": 1,
+    "offset": 0,
+    "count": 1,
+    "total": 440,
+    "has_more": true,
+    "results": 1
+  },
+  "stability": {
+    "identical": true,
+    "sample": [
+      "ZER-4001738",
+      "DWE-4001199",
+      "MAG-4003838"
+    ]
+  }
+}

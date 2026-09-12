@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 100acres sitemap index. Language models: /llms.txt is shorter. -->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/bangalore.xml</loc><lastmod>2020-10-26</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/hyderabad.xml</loc><lastmod>2025-09-09</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/pune.xml</loc><lastmod>2025-12-02</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/chennai.xml</loc><lastmod>2024-04-12</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/mumbai.xml</loc><lastmod>2023-02-17</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/gurgaon.xml</loc><lastmod>2022-09-01</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/projects.xml</loc><lastmod>2022-08-28</lastmod></sitemap>
+  <sitemap><loc>https://solve.ivy.homes/sitemaps/localities.xml</loc><lastmod>1970-01-01</lastmod></sitemap>
+</sitemapindex>

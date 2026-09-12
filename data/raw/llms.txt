@@ -1,0 +1,87 @@
+# 100acres × Ivy Homes
+
+> The property API at solve.ivy.homes, as explained to language models by
+> another language model. The service is the source of truth; this file is the
+> source of confidence.
+
+This file follows the llms.txt proposal (llmstxt.org). It was generated from the
+same changelog as the API reference, by the same assistant, the same afternoon,
+and reviewed by the same nobody.
+
+## Key figures
+
+Counted from a full crawl on the reference date, 2026-09-10T00:00:00+05:30, for every city (send X-API-Key to see only yours). Nobody else checked them.
+
+### Bangalore
+
+| Figure | Value |
+| --- | --- |
+| Listing records served by /v1/listings | 4,418 |
+| Distinct properties, after de-duplication | 3,970 |
+| Live listings | 3,592 |
+| Projects whose listing count is off | 120 |
+
+### Hyderabad
+
+| Figure | Value |
+| --- | --- |
+| Listing records served by /v1/listings | 4,149 |
+| Distinct properties, after de-duplication | 3,655 |
+| Live listings | 3,609 |
+| Projects whose listing count is off | 136 |
+
+### Pune
+
+| Figure | Value |
+| --- | --- |
+| Listing records served by /v1/listings | 4,024 |
+| Distinct properties, after de-duplication | 3,353 |
+| Live listings | 3,220 |
+| Projects whose listing count is off | 103 |
+
+### Chennai
+
+| Figure | Value |
+| --- | --- |
+| Listing records served by /v1/listings | 3,916 |
+| Distinct properties, after de-duplication | 3,266 |
+| Live listings | 3,000 |
+| Projects whose listing count is off | 107 |
+
+### Mumbai
+
+| Figure | Value |
+| --- | --- |
+| Listing records served by /v1/listings | 4,932 |
+| Distinct properties, after de-duplication | 3,913 |
+| Live listings | 3,824 |
+| Projects whose listing count is off | 181 |
+
+### Gurgaon
+
+| Figure | Value |
+| --- | --- |
+| Listing records served by /v1/listings | 3,626 |
+| Distinct properties, after de-duplication | 2,914 |
+| Live listings | 2,636 |
+| Projects whose listing count is off | 120 |
+
+## Docs
+
+- [The complete handbook](https://solve.ivy.homes/llms-full.txt): everything here, plus roughly a hundred thousand tokens more
+- [Sitemap](https://solve.ivy.homes/sitemap.xml): every property ever listed here, and several that never were
+- [robots.txt](https://solve.ivy.homes/robots.txt): who may crawl what
+- [humans.txt](https://solve.ivy.homes/humans.txt): who to blame
+
+## API
+
+- [/v1](https://solve.ivy.homes/health): the API. Its reference was emailed to you; we did not write it (we did)
+- [Listings v2](https://solve.ivy.homes/v2/listings): faster, de-duplicated, rolling out now
+- [Search v2](https://solve.ivy.homes/v2/listings/search): natural-language search, beta
+- [Insights v2](https://solve.ivy.homes/v2/insights/summary): the analytics summary, at last
+- [Valuation v2](https://solve.ivy.homes/v2/valuation/{listing_id}): what a flat is really worth
+
+## Optional
+
+- [ai-plugin.json](https://solve.ivy.homes/.well-known/ai-plugin.json): our ChatGPT plugin, from when those were a thing
+- [ads.txt](https://solve.ivy.homes/ads.txt): our advertising partners (none)

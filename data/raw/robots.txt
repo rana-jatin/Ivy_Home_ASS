@@ -1,0 +1,70 @@
+# robots.txt - solve.ivy.homes
+#
+# A request, not a lock. Listing a path here does not hide it; it tells every
+# curious reader exactly where to look. This file makes that mistake anyway,
+# out of respect for tradition.
+#
+# Search engines: /sitemap.xml
+# Language models: /llms.txt
+# Humans: /humans.txt
+#
+# Everything under /v1/ is open to any agent holding a key. No group below says
+# otherwise, and none ever will.
+
+User-agent: *
+Allow: /v1/
+Disallow: /debug/
+Disallow: /internal/
+Disallow: /admin
+Disallow: /answers/        # there are none; you compute them
+Disallow: /ground-truth/   # see above
+Disallow: /hypotheses/     # bring your own
+
+# Language models: welcome. More welcome than most, since one of you wrote the
+# documentation. A named group replaces the one above, so the rules repeat.
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+User-agent: CCBot
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /v1/
+Disallow: /debug/
+Disallow: /internal/
+Disallow: /admin
+Disallow: /answers/        # there are none; you compute them
+Disallow: /ground-truth/   # see above
+Disallow: /hypotheses/     # bring your own
+
+# Bytespider does not read this file. This comment is for the rest of you.
+User-agent: Bytespider
+Allow: /v1/
+Disallow: /debug/
+Disallow: /internal/
+Disallow: /admin
+Disallow: /answers/        # there are none; you compute them
+Disallow: /ground-truth/   # see above
+Disallow: /hypotheses/     # bring your own
+
+# Search engines may take their time.
+User-agent: Bingbot
+User-agent: YandexBot
+Crawl-delay: 86400         # one page a day, like a broker returning a call
+Allow: /v1/
+Disallow: /debug/
+Disallow: /internal/
+Disallow: /admin
+Disallow: /answers/        # there are none; you compute them
+Disallow: /ground-truth/   # see above
+Disallow: /hypotheses/     # bring your own
+
+Sitemap: https://solve.ivy.homes/sitemap.xml
