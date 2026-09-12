@@ -34,6 +34,9 @@ const step = (name, ok, extra = '') => {
   if (!ok) process.exitCode = 1;
 };
 const shot = (n) => page.screenshot({ path: join(shots, `${n}.png`), fullPage: false });
+// The app keeps the pull in IndexedDB, so after the first sign-in a navigation
+// makes no network requests to wait on - wait for the dataset itself instead.
+const settle = () => page.waitForSelector('.shell[data-dataset="ready"]', { timeout: 90000 });
 
 // --- login screen ---
 await page.goto(BASE, { waitUntil: 'networkidle' });
@@ -83,6 +86,7 @@ await shot('03-filtered');
 const listings = JSON.parse(readFileSync(join(ROOT, 'data/listings.json'), 'utf8'));
 const dupId = JSON.parse(readFileSync(join(ROOT, 'analysis/out-duplicates.json'), 'utf8')).clusters[0][0];
 await page.goto(`${BASE}/listings/${encodeURIComponent(dupId)}`, { waitUntil: 'networkidle' });
+await settle();
 await page.waitForSelector('.dl', { timeout: 20000 });
 const detailTitle = (await page.textContent('h1')) ?? '';
 step('detail page reachable by URL alone', detailTitle.length > 0, `${dupId} -> ${detailTitle}`);
@@ -92,6 +96,7 @@ await shot('04-detail');
 // a corrupt one, to check the badge path
 const corruptId = JSON.parse(readFileSync(join(ROOT, 'analysis/out-corrupt.json'), 'utf8')).ids[0];
 await page.goto(`${BASE}/listings/${encodeURIComponent(corruptId)}`, { waitUntil: 'networkidle' });
+await settle();
 await page.waitForSelector('.note.bad', { timeout: 20000 });
 step('impossible record is called out on its page', await page.isVisible('.note.bad'), corruptId);
 await shot('05-corrupt');
@@ -100,7 +105,8 @@ await shot('05-corrupt');
 // Saved lists live on the server and survive between runs, so clear it first;
 // otherwise the toggle below removes rather than adds.
 await page.goto(`${BASE}/saved`, { waitUntil: 'networkidle' });
-await page.waitForSelector('header.top', { timeout: 30000 });
+await settle();
+await page.waitForSelector('main[data-saved="ready"]', { timeout: 30000 });
 for (;;) {
   const star = page.locator('.listing button:has-text("★")').first();
   if (!(await star.count())) break;
@@ -110,35 +116,43 @@ for (;;) {
 step('saved list starts empty', (await page.locator('.listing').count()) === 0);
 
 await page.goto(`${BASE}/listings/${encodeURIComponent(listings[0].listing_id)}`, { waitUntil: 'networkidle' });
+await settle();
 await page.waitForSelector('button:has-text("Save")', { timeout: 20000 });
 await page.click('button:has-text("Save")');
 await page.waitForTimeout(900);
 step('the button flips to saved', await page.isVisible('button:has-text("★ Saved")'));
 await page.goto(`${BASE}/saved`, { waitUntil: 'networkidle' });
-await page.waitForTimeout(900);
+await settle();
+await page.waitForSelector('main[data-saved="ready"]', { timeout: 30000 });
 const savedCards = await page.locator('.listing').count();
 step('saved listing appears on the saved screen', savedCards === 1, `${savedCards}`);
 await shot('06-saved');
 
 // --- survives a reload (the session requirement) ---
-await page.reload({ waitUntil: 'networkidle' });
+const reloadStarted = Date.now();
+await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForSelector('header.top', { timeout: 30000 });
 step('session survives a page refresh', await page.isVisible('header.top'));
+await settle();
+step('a reload opens the stored copy instead of re-pulling', Date.now() - reloadStarted < 5000, `${Date.now() - reloadStarted} ms`);
 
 // --- rentals, projects, insights ---
 await page.goto(`${BASE}/rentals`, { waitUntil: 'networkidle' });
+await settle();
 await page.waitForSelector('table tbody tr', { timeout: 30000 });
 step('rentals table renders', (await page.locator('table tbody tr').count()) > 0);
 step('a deposit correction is shown', await page.isVisible('text=served as'));
 await shot('07-rentals');
 
 await page.goto(`${BASE}/projects`, { waitUntil: 'networkidle' });
+await settle();
 await page.waitForSelector('table tbody tr', { timeout: 30000 });
 const projText = await page.textContent('main .sub');
 step('projects screen reports the miscount', /119 projects/.test(projText ?? ''), (projText ?? '').slice(0, 120));
 await shot('08-projects');
 
 await page.goto(`${BASE}/insights`, { waitUntil: 'networkidle' });
+await settle();
 await page.waitForSelector('.kpi', { timeout: 30000 });
 const kpis = await page.locator('.kpi').count();
 step('insights screen renders its KPIs', kpis >= 10, `${kpis} tiles`);
