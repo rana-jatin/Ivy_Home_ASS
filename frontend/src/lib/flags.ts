@@ -33,10 +33,48 @@ export function corruptReasons(r: FixedListing): CorruptReason[] {
   return out;
 }
 
+/** How the impossibility rules fell out: how many classes, how big, and overlap. */
+export function corruptSummary(corrupt: Map<string, CorruptReason[]>) {
+  const byReason = new Map<CorruptReason, number>();
+  let overlap = 0;
+  for (const reasons of corrupt.values()) {
+    if (reasons.length > 1) overlap++;
+    for (const r of reasons) byReason.set(r, (byReason.get(r) ?? 0) + 1);
+  }
+  const sizes = [...byReason.values()];
+  return {
+    byReason,
+    classes: byReason.size,
+    /** the size every class shares, or null if they differ */
+    eachSize: sizes.length && sizes.every((n) => n === sizes[0]) ? sizes[0] : null,
+    minSize: sizes.length ? Math.min(...sizes) : 0,
+    maxSize: sizes.length ? Math.max(...sizes) : 0,
+    /** records hit by more than one rule */
+    overlap,
+  };
+}
+
+/** What the fraud rule saw for one phone number it flagged. */
+export type FakeProfile = {
+  listings: number;
+  names: number;
+  websites: number;
+  localities: number;
+  /** median of price per ft² over the locality-and-bedroom market rate */
+  ratio: number;
+  allVerifiedLive: boolean;
+};
+
+// The duplicate matcher's tolerances, exported so the screens that describe
+// the rule quote the numbers it actually uses.
+export const RADIUS_M = 150;
+export const AREA_TOL = 0.02;
+
 export type Flags = {
   corrupt: Map<string, CorruptReason[]>;
   fakeIds: Set<string>;
   fakeContacts: Set<string>;
+  fakeProfiles: Map<string, FakeProfile>;
   /** listing_id -> the ids of every other record describing the same property */
   duplicatesOf: Map<string, string[]>;
   clusters: string[][];
@@ -106,9 +144,20 @@ export function computeFlags(listings: FixedListing[]): Flags {
   const fakeIds = new Set<string>();
   for (const c of fakeContacts) for (const r of byContact.get(c) ?? []) fakeIds.add(r.listing_id);
 
+  const fakeProfiles = new Map<string, FakeProfile>();
+  for (const s of scored) {
+    if (!fakeContacts.has(s.contact)) continue;
+    fakeProfiles.set(s.contact, {
+      listings: s.rs.length,
+      names: new Set(s.rs.map((r) => r.posted_by_name)).size,
+      websites: new Set(s.rs.map((r) => r.website)).size,
+      localities: new Set(s.rs.map((r) => r.locality)).size,
+      ratio: s.medianRatio,
+      allVerifiedLive: s.rs.every((r) => r.is_verified && r.is_live),
+    });
+  }
+
   // ---- duplicates: physical signature plus position ----
-  const RADIUS_M = 150;
-  const AREA_TOL = 0.02;
   const CELL = 0.0015;
   const SIGNATURE: (keyof FixedListing)[] = [
     'bedroom', 'bathroom', 'balcony', 'floor', 'total_floors',
@@ -171,6 +220,7 @@ export function computeFlags(listings: FixedListing[]): Flags {
     corrupt,
     fakeIds,
     fakeContacts,
+    fakeProfiles,
     duplicatesOf,
     clusters,
     distinctProperties: groups.size,

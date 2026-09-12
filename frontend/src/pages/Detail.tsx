@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { useDataset } from '../api/store';
 import { Badges } from '../components/ListingCard';
 import { fixListing, inr, inrShort, istString, sqft, type FixedListing, type Listing } from '../lib/corrections';
+import { RADIUS_M } from '../lib/flags';
 import { useSaved } from '../lib/saved';
 
 export default function Detail() {
@@ -43,6 +44,7 @@ export default function Detail() {
   const dupes = flags.duplicatesOf.get(r.listing_id) ?? [];
   const corrupt = flags.corrupt.get(r.listing_id) ?? [];
   const isFake = flags.fakeIds.has(r.listing_id);
+  const fakeProfile = flags.fakeProfiles.get(r.posted_by_contact);
   const rate = flags.marketRate.get(`${r.locality}|${r.bedroom}`);
   const saved = ids.has(r.listing_id);
   const project = data.projects.find((p) => p.project_id === r.project_id);
@@ -73,12 +75,14 @@ export default function Detail() {
           </ul>
         </div>
       )}
-      {isFake && (
+      {isFake && fakeProfile && (
         <div className="note warn" style={{ marginBottom: 12 }}>
           <strong>Probably not a real listing.</strong> The number{' '}
-          <span className="mono">{r.posted_by_contact}</span> posts {' '}
-          across several sites and localities under different seller names, consistently at about
-          half the going rate. Listings like this exist to collect enquiries.
+          <span className="mono">{r.posted_by_contact}</span> posts {fakeProfile.listings} listings
+          across {fakeProfile.websites} websites and {fakeProfile.localities} localities under{' '}
+          {fakeProfile.names} seller names, at a median {Math.round(fakeProfile.ratio * 100)}% of the
+          price per ft² for the locality and bedroom count. Listings like this exist to collect
+          enquiries.
         </div>
       )}
 
@@ -134,7 +138,7 @@ export default function Detail() {
             <div className="card">
               <h2 style={{ marginTop: 0 }}>Same property, listed {dupes.length + 1}×</h2>
               <p className="muted" style={{ fontSize: 13 }}>
-                Matched on the physical signature and a position within 150 m. Price and seller
+                Matched on the physical signature and a position within {RADIUS_M} m. Price and seller
                 differ between copies; the flat does not.
               </p>
               {dupes.map((d) => {

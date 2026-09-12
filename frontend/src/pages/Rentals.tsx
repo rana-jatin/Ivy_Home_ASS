@@ -40,7 +40,9 @@ export default function Rentals() {
   }, [data, locality, bedroom, furnishing, maxRent]);
 
   if (!data) return null;
-  const corrected = data.rentals.filter((r) => r.deposit_unit_corrected).length;
+  const correctedRecords = data.rentals.filter((r) => r.deposit_unit_corrected);
+  const corrected = correctedRecords.length;
+  const correctedSites = [...new Set(correctedRecords.map((r) => r.website))].sort();
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const clamped = Math.min(page, pages);
   const slice = filtered.slice((clamped - 1) * PER_PAGE, clamped * PER_PAGE);
@@ -51,8 +53,8 @@ export default function Rentals() {
       <h1>Rentals</h1>
       <p className="sub">
         {data.rentals.length.toLocaleString('en-IN')} records. Deposits are shown in rupees:{' '}
-        {corrected} of them are served as a count of months&apos; rent instead, all from one
-        website, and are converted here.
+        {corrected} of them are served as a count of months&apos; rent instead, all from{' '}
+        {correctedSites.join(', ')}, and are converted here.
       </p>
 
       <div className="filters">

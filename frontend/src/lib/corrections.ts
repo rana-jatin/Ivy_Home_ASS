@@ -170,6 +170,19 @@ export const sqft = (n: number) => `${new Intl.NumberFormat('en-IN').format(n)} 
 
 export const REFERENCE = new Date('2026-09-10T00:00:00+05:30');
 
+/**
+ * The one result the app quotes rather than computes: it needs the server's own
+ * sort_by=posted_at order, which the app never pulls. Out-of-order records when
+ * the served posted_at values are bucketed by calendar date in each timezone.
+ * analysis/10-parity.mjs fails if these drift from analysis/out-timestamps.json.
+ */
+export const OFFLINE_SORT_TEST = {
+  source: 'analysis/02-timestamps.mjs',
+  records: 4100,
+  istDateErrors: 0,
+  utcDateErrors: 865,
+};
+
 /** posted_at is genuinely UTC - see findings.md - so IST is a straight shift. */
 export const istString = (iso: string) =>
   new Date(new Date(iso).getTime() + 5.5 * 3600_000).toISOString().replace('T', ' ').slice(0, 16) + ' IST';

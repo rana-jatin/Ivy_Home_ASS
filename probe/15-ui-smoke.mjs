@@ -143,7 +143,9 @@ await page.waitForSelector('.kpi', { timeout: 30000 });
 const kpis = await page.locator('.kpi').count();
 step('insights screen renders its KPIs', kpis >= 10, `${kpis} tiles`);
 const body = (await page.textContent('main')) ?? '';
-for (const want of ['4,100', '3,116', '3,233', '3.78 Cr']) {
+// The last two are sentences the screen used to hard-code; they are computed
+// now, so seeing them proves the computed text renders.
+for (const want of ['4,100', '3,116', '3,233', '3.78 Cr', '7 classes, 9 records each', 'each post 15–16 listings']) {
   step(`insights shows ${want}`, body.includes(want));
 }
 await shot('09-insights');

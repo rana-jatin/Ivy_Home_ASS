@@ -14,8 +14,8 @@ import { ROOT } from '../probe/lib.mjs';
 const tmp = mkdtempSync(join(tmpdir(), 'ivy-parity-'));
 const entry = join(tmp, 'entry.ts');
 writeFileSync(entry, `
-export { fixListing, fixRental, fixProject } from ${JSON.stringify(join(ROOT, 'frontend/src/lib/corrections.ts'))};
-export { computeFlags } from ${JSON.stringify(join(ROOT, 'frontend/src/lib/flags.ts'))};
+export { fixListing, fixRental, fixProject, OFFLINE_SORT_TEST } from ${JSON.stringify(join(ROOT, 'frontend/src/lib/corrections.ts'))};
+export { computeFlags, corruptSummary, RADIUS_M, AREA_TOL } from ${JSON.stringify(join(ROOT, 'frontend/src/lib/flags.ts'))};
 export { selectListings, SORTS } from ${JSON.stringify(join(ROOT, 'frontend/src/lib/browse.ts'))};
 `);
 const out = join(tmp, 'bundle.mjs');
@@ -30,7 +30,8 @@ const rentals = load('rentals').map(app.fixRental);
 const projects = load('projects').map(app.fixProject);
 const flags = app.computeFlags(listings);
 
-const answers = JSON.parse(readFileSync(join(ROOT, 'analysis/out-answers.json'), 'utf8'));
+const analysisOut = (n) => JSON.parse(readFileSync(join(ROOT, `analysis/out-${n}.json`), 'utf8'));
+const answers = analysisOut('answers');
 const eqSet = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
 
 // The listings screen's "one per property" view. With nothing filtered out it
@@ -54,6 +55,17 @@ for (const quality of ['clean', 'all', 'flagged']) {
   }
 }
 
+// The figures the insights and detail screens put into sentences. The app
+// computes them; these checks pin them to what the analysis scripts found, so
+// a sentence on screen cannot quietly disagree with submission.json.
+const corruptOut = analysisOut('corrupt');
+const classSizes = Object.values(corruptOut.byReason).map((ids) => ids.length);
+const describeClasses = (classes, sizes, overlap) =>
+  `${classes}x${[...new Set(sizes)].join('/')} +${overlap}`;
+const appCorrupt = app.corruptSummary(flags.corrupt);
+const timestamps = analysisOut('timestamps').listings_sort_key;
+const duplicatesOut = analysisOut('duplicates');
+
 const checks = [
   ['total_listing_records', listings.length, answers.total_listing_records],
   ['unique_properties', flags.distinctProperties, answers.unique_properties],
@@ -67,6 +79,14 @@ const checks = [
   ['listings area corrections', listings.filter((r) => r.area_unit_corrected).length, 337],
   ['one per property, unfiltered', onePerProperty, answers.unique_properties],
   ['kept copy outranked by hidden', outranked, 0],
+  ['corrupt classes x size +overlap',
+    describeClasses(appCorrupt.classes, [...appCorrupt.byReason.values()], appCorrupt.overlap),
+    describeClasses(classSizes.length, classSizes, Object.values(corruptOut.detail).filter((r) => r.length > 1).length)],
+  ['fake profile contacts', [...flags.fakeProfiles.keys()].sort(), [...analysisOut('fraud').contacts].sort()],
+  ['duplicate radius m / area tol', `${app.RADIUS_M}/${app.AREA_TOL}`, `${duplicatesOut.radius_m}/${duplicatesOut.area_tolerance}`],
+  ['offline sort test ist/utc/n',
+    `${app.OFFLINE_SORT_TEST.istDateErrors}/${app.OFFLINE_SORT_TEST.utcDateErrors}/${app.OFFLINE_SORT_TEST.records}`,
+    `${timestamps['IST date (offset +5.5)']}/${timestamps['UTC date (offset 0)']}/${answers.total_listing_records}`],
 ];
 
 let bad = 0;
