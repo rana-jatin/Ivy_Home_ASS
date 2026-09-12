@@ -36,6 +36,8 @@ export default function ListingCard({ r, flags }: { r: FixedListing; flags: Flag
         <button
           onClick={() => toggle(r.listing_id)}
           title={saved ? 'Remove from saved' : 'Save this listing'}
+          aria-label={saved ? `Remove ${r.apartment_name} from saved` : `Save ${r.apartment_name}`}
+          aria-pressed={saved}
           style={{ padding: '2px 9px', lineHeight: 1.4 }}
         >
           {saved ? '★' : '☆'}

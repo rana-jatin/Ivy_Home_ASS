@@ -4,6 +4,7 @@ import { getSession, logout, onSessionChange } from './api/client';
 import { DataProvider, useData } from './api/store';
 import { DataStatus, PullBar } from './components/DataStatus';
 import { ScrollManager } from './components/Navigation';
+import { ToastProvider } from './components/Toasts';
 import { SavedProvider } from './lib/saved';
 import Login from './pages/Login';
 import Browse from './pages/Browse';
@@ -61,9 +62,11 @@ export default function App() {
   if (!signedIn) return <Login />;
   return (
     <DataProvider>
-      <SavedProvider>
-        <Chrome />
-      </SavedProvider>
+      <ToastProvider>
+        <SavedProvider>
+          <Chrome />
+        </SavedProvider>
+      </ToastProvider>
     </DataProvider>
   );
 }

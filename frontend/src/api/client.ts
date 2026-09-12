@@ -45,6 +45,13 @@ function saveSession(s: Session | null) {
 
 let session: Session | null = loadSession();
 let refreshing: Promise<Session | null> | null = null;
+// Why the last session ended without the user signing out, for the sign-in
+// screen to say. A deliberate sign-out or a new sign-in clears it.
+let endedBecause: string | null = null;
+
+/** Set when a session ended on its own, null otherwise. */
+export const sessionEndReason = () => endedBecause;
+
 const listeners = new Set<(s: Session | null) => void>();
 
 export function onSessionChange(fn: (s: Session | null) => void): () => void {
@@ -94,6 +101,7 @@ export async function login(email: string, password: string): Promise<Session> {
   if (!res.ok) {
     throw new ApiError(res.status, detailOf(body) ?? `login failed (${res.status})`);
   }
+  endedBecause = null;
   const s: Session = {
     // documented as `token`; the API sends `access_token`
     access_token: body.access_token,
@@ -110,6 +118,7 @@ export function logout() {
   // side, and the token does keep working afterwards - so the client discarding
   // it is the part that matters. Fire the call anyway, ignore the result.
   const s = session;
+  endedBecause = null;
   setSession(null);
   if (s) {
     void raw('/auth/logout', {
@@ -132,6 +141,8 @@ async function refresh(): Promise<Session | null> {
         body: JSON.stringify({ refresh_token: current.refresh_token }),
       });
       if (!res.ok) {
+        const why = detailOf(body);
+        endedBecause = `Your session ended and could not be renewed${why ? ` (${why})` : ''}. Sign in again to carry on.`;
         setSession(null);
         return null;
       }

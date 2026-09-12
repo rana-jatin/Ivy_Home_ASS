@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { login } from '../api/client';
+import { login, sessionEndReason } from '../api/client';
 
 const DEMO = ['demo1@ivy.homes', 'demo2@ivy.homes', 'demo3@ivy.homes'];
 
@@ -27,6 +27,10 @@ export default function Login() {
       <form className="card login" onSubmit={submit}>
         <h1>Ivy Homes</h1>
         <p className="sub">Chennai property browser. Sign in with a demo account.</p>
+
+        {sessionEndReason() && (
+          <div className="note warn" style={{ marginBottom: 14 }}>{sessionEndReason()}</div>
+        )}
 
         <div className="row">
           <label htmlFor="email">Email</label>
