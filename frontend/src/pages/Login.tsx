@@ -5,7 +5,7 @@ const DEMO = ['demo1@ivy.homes', 'demo2@ivy.homes', 'demo3@ivy.homes'];
 
 export default function Login() {
   const [email, setEmail] = useState(DEMO[0]);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('d1eecc3b8b');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +45,7 @@ export default function Login() {
             value={password}
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="the password issued with your key"
+            placeholder="password"
             required
           />
         </div>

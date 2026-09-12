@@ -25,8 +25,9 @@ npm install
 npm run dev                   # http://localhost:5173
 ```
 
-Sign in with `demo1@ivy.homes` (or demo2 / demo3) and the password issued with
-the key. The app pulls the whole city on sign-in — around 123 requests, a few
+Sign in with `demo1@ivy.homes` (or demo2 / demo3) and password `d1eecc3b8b` —
+the same password on all three demo accounts, prefilled on the login screen.
+The app pulls the whole city on sign-in — around 123 requests, a few
 seconds — and everything after that is local.
 
 ```bash
