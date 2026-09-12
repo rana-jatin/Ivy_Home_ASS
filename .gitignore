@@ -6,3 +6,8 @@ frontend/dist/
 /package.json
 /package-lock.json
 .DS_Store
+
+# vercel link, and local env files (the examples stay tracked)
+.vercel
+.env*
+!.env.example

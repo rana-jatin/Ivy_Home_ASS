@@ -2,6 +2,7 @@
 // against the spec before writing it. Nothing here is typed by hand except the
 // candidate block.
 import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { ROOT, E } from '../probe/lib.mjs';
 
@@ -12,8 +13,8 @@ const findings = read('out-findings.json');
 const candidate = {
   name: 'Jatin Rana',
   email: 'jatinrana1230987@gmail.com',
-  repo_url: 'https://github.com/jatinrana/ivy-homes-chennai',
-  demo_url: 'https://ivy-homes-chennai.vercel.app',
+  repo_url: 'https://github.com/rana-jatin/Ivy_Home_ASS',
+  demo_url: 'https://ivy-home-ass007-delta.vercel.app',
 };
 
 const submission = { api_key: E.IVY_API_KEY, candidate, answers, findings };
@@ -24,6 +25,11 @@ const need = (cond, msg) => { if (!cond) problems.push(msg); };
 
 need(/^IVY26-/.test(submission.api_key), 'api_key does not look like a key');
 for (const k of ['name', 'email', 'repo_url', 'demo_url']) need(!!candidate[k], `candidate.${k} is empty`);
+// A typed-in repo URL went stale once already. Hold it to the remote this
+// repository actually pushes to.
+const origin = execFileSync('git', ['remote', 'get-url', 'origin'], { cwd: ROOT, encoding: 'utf8' })
+  .trim().replace(/\.git$/, '');
+need(origin === candidate.repo_url, `candidate.repo_url is ${candidate.repo_url} but origin is ${origin}`);
 
 const shape = {
   total_listing_records: 'number',
