@@ -13,6 +13,7 @@ import Detail from './pages/Detail';
 import Saved from './pages/Saved';
 import Rentals from './pages/Rentals';
 import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
 import Insights from './pages/Insights';
 import NotFound from './pages/NotFound';
 
@@ -51,6 +52,7 @@ function Chrome() {
           <Route path="/listings/:id" element={<Detail />} />
           <Route path="/rentals" element={<Rentals />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/saved" element={<Saved />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="*" element={<NotFound />} />

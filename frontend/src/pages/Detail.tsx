@@ -160,7 +160,13 @@ export default function Detail() {
               {r.coords_swapped && <span className="muted"> — served transposed</span>}
             </dd>
             <dt>Project</dt>
-            <dd>{project ? `${project.apartment_name} (${project.project_id})` : r.project_id ?? '—'}</dd>
+            <dd>
+              {r.project_id ? (
+                <Link to={`/projects/${encodeURIComponent(r.project_id)}`}>
+                  {project ? `${project.apartment_name} (${project.project_id})` : r.project_id}
+                </Link>
+              ) : '—'}
+            </dd>
             <dt>Source</dt>
             <dd><a href={r.listing_url} target="_blank" rel="noreferrer noopener">{r.listing_url}</a></dd>
           </dl>
@@ -204,7 +210,9 @@ export default function Detail() {
 
           {project && (
             <div className="card">
-              <h2 style={{ marginTop: 0 }}>{project.apartment_name}</h2>
+              <h2 style={{ marginTop: 0 }}>
+                <Link to={`/projects/${encodeURIComponent(project.project_id)}`}>{project.apartment_name}</Link>
+              </h2>
               <p className="muted" style={{ fontSize: 13, marginTop: -4 }}>
                 {project.developer_name} · {project.project_status}
               </p>
@@ -216,7 +224,7 @@ export default function Detail() {
                 <dt>Reported listings</dt>
                 <dd>{project.total_listings}</dd>
                 <dt>Actually live</dt>
-                <dd>{(data?.listingsByProject.get(project.project_id) ?? []).filter((x) => x.is_live).length}</dd>
+                <dd>{data?.liveListingCount.get(project.project_id) ?? 0}</dd>
               </dl>
             </div>
           )}

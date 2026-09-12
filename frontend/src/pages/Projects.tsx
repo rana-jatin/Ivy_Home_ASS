@@ -95,7 +95,7 @@ export default function Projects() {
               return (
                 <tr key={p.project_id}>
                   <td>
-                    <div>{p.apartment_name}</div>
+                    <Link to={`/projects/${encodeURIComponent(p.project_id)}`}>{p.apartment_name}</Link>
                     <div className="mono muted" style={{ fontSize: 12 }}>{p.project_id} · {p.developer_name}</div>
                   </td>
                   <td>{p.locality}</td>
