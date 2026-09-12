@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useDataset } from '../api/store';
 import ListingCard from '../components/ListingCard';
+import { selectListings } from '../lib/browse';
 
 const PER_PAGE = 24;
 
-// Every one of these runs locally. locality, bhk and property_type do work on
-// the server; min_price, max_price and furnishing are accepted and ignored
-// there. Doing them all in one place means the filter panel behaves
-// consistently instead of half of it silently doing nothing.
+// Every one of these runs locally, in lib/browse.ts. locality, bhk and
+// property_type do work on the server; min_price, max_price and furnishing are
+// accepted and ignored there. Doing them all in one place means the filter
+// panel behaves consistently instead of half of it silently doing nothing.
 export default function Browse() {
   const data = useDataset();
   const [params, setParams] = useSearchParams();
@@ -30,6 +31,7 @@ export default function Browse() {
   const propertyType = get('property_type');
   const quality = get('quality', 'clean');
   const sort = get('sort', 'posted_desc');
+  const dedupe = get('dedupe') === '1';
   const page = Math.max(1, Number(get('page', '1')) || 1);
 
   const localities = useMemo(
@@ -41,51 +43,15 @@ export default function Browse() {
     [data],
   );
 
-  const filtered = useMemo(() => {
-    if (!data) return [];
-    const { flags } = data;
-    const min = minPrice ? Number(minPrice) : null;
-    const max = maxPrice ? Number(maxPrice) : null;
-    let out = data.listings.filter((r) => {
-      if (locality && r.locality !== locality) return false;
-      if (bedroom && r.bedroom !== Number(bedroom)) return false;
-      if (furnishing && r.furnishing !== furnishing) return false;
-      if (propertyType && r.property_type !== propertyType) return false;
-      if (min !== null && r.price < min) return false;
-      if (max !== null && r.price > max) return false;
-      if (quality === 'clean') {
-        if (!r.is_live) return false;
-        if (flags.corrupt.has(r.listing_id)) return false;
-        if (flags.fakeIds.has(r.listing_id)) return false;
-      }
-      if (quality === 'flagged') {
-        const bad = flags.corrupt.has(r.listing_id) || flags.fakeIds.has(r.listing_id) || !r.is_live;
-        if (!bad) return false;
-      }
-      return true;
-    });
-    // De-duplicate on request: keep one record per distinct property.
-    if (get('dedupe') === '1') {
-      const seen = new Set<string>();
-      out = out.filter((r) => {
-        const group = flags.duplicatesOf.get(r.listing_id);
-        if (!group) return true;
-        const key = [r.listing_id, ...group].sort()[0];
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-    }
-    const cmp: Record<string, (a: typeof out[0], b: typeof out[0]) => number> = {
-      posted_desc: (a, b) => b.posted_at.localeCompare(a.posted_at),
-      posted_asc: (a, b) => a.posted_at.localeCompare(b.posted_at),
-      price_asc: (a, b) => a.price - b.price,
-      price_desc: (a, b) => b.price - a.price,
-      area_desc: (a, b) => b.carpet_area_sqft - a.carpet_area_sqft,
-      pps_asc: (a, b) => a.price_per_sqft - b.price_per_sqft,
-    };
-    return [...out].sort(cmp[sort] ?? cmp.posted_desc);
-  }, [data, locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, params]);
+  const filtered = useMemo(
+    () =>
+      data
+        ? selectListings(data.listings, data.flags, {
+            locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe,
+          })
+        : [],
+    [data, locality, bedroom, furnishing, propertyType, minPrice, maxPrice, quality, sort, dedupe],
+  );
 
   if (!data) return null;
   const pages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
@@ -163,7 +129,7 @@ export default function Browse() {
         </div>
         <div>
           <label htmlFor="f-dd">Duplicates</label>
-          <select id="f-dd" value={get('dedupe')} onChange={(e) => set('dedupe', e.target.value)}>
+          <select id="f-dd" value={dedupe ? '1' : ''} onChange={(e) => set('dedupe', e.target.value)}>
             <option value="">Show every record</option>
             <option value="1">One per property</option>
           </select>
