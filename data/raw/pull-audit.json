@@ -1,0 +1,36 @@
+{
+  "stamp": "2026-09-12T09-59-14-591Z",
+  "requests": 124,
+  "result": {
+    "listings": {
+      "path": "/v1/listings",
+      "pulled": 4100,
+      "declared_total": 3923,
+      "declared_total_matches_pulled": false,
+      "unique_ids": 4100,
+      "duplicate_ids_in_pull": 0,
+      "pages": 82,
+      "pulled_at": "2026-09-12T09:59:23.435Z"
+    },
+    "rentals": {
+      "path": "/v1/rentals",
+      "pulled": 1550,
+      "declared_total": 1483,
+      "declared_total_matches_pulled": false,
+      "unique_ids": 1550,
+      "duplicate_ids_in_pull": 0,
+      "pages": 31,
+      "pulled_at": "2026-09-12T09:59:26.604Z"
+    },
+    "projects": {
+      "path": "/v1/projects",
+      "pulled": 460,
+      "declared_total": 440,
+      "declared_total_matches_pulled": false,
+      "unique_ids": 460,
+      "duplicate_ids_in_pull": 0,
+      "pages": 10,
+      "pulled_at": "2026-09-12T09:59:27.617Z"
+    }
+  }
+}
