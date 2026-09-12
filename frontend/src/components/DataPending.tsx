@@ -21,9 +21,22 @@ export default function DataPending() {
   }
 
   if (s.status !== 'loading') {
+    // Opening the stored copy takes well under a second; hold the shape of a
+    // screen rather than flashing a sentence.
     return (
-      <main>
-        <p className="muted">Opening the local copy of the city…</p>
+      <main aria-busy="true">
+        <span className="sr-only">Opening the local copy of the city…</span>
+        <div className="skeleton" style={{ width: 180, height: 26, marginBottom: 10 }} />
+        <div className="skeleton" style={{ width: '60%', height: 14, marginBottom: 22 }} />
+        <div className="grid">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="card" style={{ display: 'grid', gap: 10 }}>
+              <div className="skeleton" style={{ width: '55%', height: 16 }} />
+              <div className="skeleton" style={{ width: '80%', height: 12 }} />
+              <div className="skeleton" style={{ width: '40%', height: 20 }} />
+            </div>
+          ))}
+        </div>
       </main>
     );
   }
