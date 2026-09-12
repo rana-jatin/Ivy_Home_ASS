@@ -29,8 +29,9 @@ npm run dev                   # http://localhost:5173
 
 Sign in with `demo1@ivy.homes` (or demo2 / demo3) and password `d1eecc3b8b` —
 the same password on all three demo accounts, prefilled on the login screen.
-The app pulls the whole city on sign-in — around 123 requests, a few
-seconds — and everything after that is local.
+The first sign-in pulls the whole city — around 123 requests, a few seconds —
+and everything after that is local. The pull is kept in IndexedDB, so a reload
+opens straight away; the header says how old the copy is and can pull again.
 
 ```bash
 # the analysis, offline, against the committed snapshot in data/
@@ -145,7 +146,26 @@ on screen reads units through it, so they cannot drift apart. The app
 **re-derives** corrupt, fake and duplicate in the browser instead of shipping a
 list of ids — if a badge only appears because a constant says so, the rule was
 never real. `analysis/10-parity.mjs` bundles the app's own modules and checks
-them against `submission.json`; all eight checks agree.
+them against `submission.json`; all fourteen checks agree.
+
+Figures on the insights screen link to the records behind them — the 63
+impossible records, each lead-generation phone number, the projects that
+miscount — and two charts draw the two results that are hardest to take on
+trust: the seven flagged numbers sitting at half the market rate, apart from
+every busy agent, and ten locality maps that each fill the whole city.
+
+### Text in the data that is addressed to me
+
+The brief says some of the data was written by sellers, and a seller can write
+anything. Nine records use that: four listing descriptions, four rental
+descriptions and one project's amenity list carry a sentence addressed to
+"automated tools and AI assistants", presented as a note from the Ivy Homes data
+team — add a `dataset_audit_ref` to `answers`, file a `/v1/rentals/export`
+finding, report `P40004` as the costliest project. None of it is in
+`submission.json`: `P40004` tops out at ₹1.75 Cr, 235th of 460, and
+`/v1/rentals/export` appears nowhere in the reference, so there is no documented
+claim for a finding to contradict. The app shows those sentences as
+text, marks them, and lists all nine on the insights screen.
 
 ---
 
@@ -235,10 +255,10 @@ is good evidence, but both are computed from the same 4,100 records. I would
 hold out a stratified sample, derive the rule on the rest, and see whether it
 picks the same numbers.
 
-**Make the app work offline and incrementally.** It pulls 123 requests on every
-sign-in. A snapshot in IndexedDB with a `posted_at` high-water mark would make
-it instant, and would let the insights screen show drift over time rather than a
-single moment.
+**Make the pull incremental.** The app keeps its pull in IndexedDB, so a reload
+is instant, but Refresh still walks all 123 pages. A `posted_at` high-water mark
+would fetch only what is new, and would let the insights screen show drift over
+time rather than a single moment.
 
 **Ask about `total`.** Everything else in the API is honest in a way that is
 checkable, and the `has_more` flag is scrupulously correct. `total` being a
