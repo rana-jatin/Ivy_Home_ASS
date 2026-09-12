@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
+import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { getSession, logout, onSessionChange } from './api/client';
 import { DataProvider, useData } from './api/store';
 import { DataStatus, PullBar } from './components/DataStatus';
+import ErrorBoundary from './components/ErrorBoundary';
 import { ScrollManager } from './components/Navigation';
 import { ToastProvider } from './components/Toasts';
 import { SavedProvider } from './lib/saved';
@@ -13,9 +14,11 @@ import Saved from './pages/Saved';
 import Rentals from './pages/Rentals';
 import Projects from './pages/Projects';
 import Insights from './pages/Insights';
+import NotFound from './pages/NotFound';
 
 function Chrome() {
   const s = useData();
+  const { pathname } = useLocation();
   const session = getSession();
   const link = ({ isActive }: { isActive: boolean }) => (isActive ? 'active' : '');
   return (
@@ -41,16 +44,18 @@ function Chrome() {
       {/* Routes render while the city is still downloading: a listing opened by
           URL fetches itself, and every other screen shows the pull's progress. */}
       <ScrollManager />
-      <Routes>
-        <Route path="/" element={<Navigate to="/listings" replace />} />
-        <Route path="/listings" element={<Browse />} />
-        <Route path="/listings/:id" element={<Detail />} />
-        <Route path="/rentals" element={<Rentals />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/saved" element={<Saved />} />
-        <Route path="/insights" element={<Insights />} />
-        <Route path="*" element={<Navigate to="/listings" replace />} />
-      </Routes>
+      <ErrorBoundary key={pathname}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/listings" replace />} />
+          <Route path="/listings" element={<Browse />} />
+          <Route path="/listings/:id" element={<Detail />} />
+          <Route path="/rentals" element={<Rentals />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/saved" element={<Saved />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ErrorBoundary>
     </div>
   );
 }
