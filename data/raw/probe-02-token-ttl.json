@@ -1,0 +1,107 @@
+[
+  {
+    "at_s": 0,
+    "event": "login",
+    "expires_in": 900,
+    "has_refresh": true
+  },
+  {
+    "at_s": 61,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 121,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 183,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 244,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 304,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 364,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 425,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 486,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 546,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 607,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 667,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 727,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 789,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 850,
+    "event": "poll",
+    "status": 200
+  },
+  {
+    "at_s": 911,
+    "event": "poll",
+    "status": 401,
+    "detail": "access token expired - POST /auth/refresh with your refresh_token"
+  },
+  {
+    "event": "first_401_at_s",
+    "at_s": 911
+  },
+  {
+    "at_s": 911,
+    "event": "refresh",
+    "status": 200,
+    "keys": [
+      "access_token",
+      "refresh_token",
+      "token_type",
+      "expires_in",
+      "refresh_url",
+      "user"
+    ],
+    "expires_in": 900
+  },
+  {
+    "at_s": 911,
+    "event": "authed_after_refresh",
+    "status": 200
+  }
+]

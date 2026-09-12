@@ -1,0 +1,337 @@
+{
+  "ids": [
+    "100-4000397",
+    "100-4000449",
+    "100-4000457",
+    "100-4000491",
+    "100-4000545",
+    "100-4000738",
+    "100-4001484",
+    "100-4001530",
+    "100-4001703",
+    "100-4001961",
+    "100-4002832",
+    "100-4002961",
+    "DWE-4000236",
+    "DWE-4000307",
+    "DWE-4000412",
+    "DWE-4000745",
+    "DWE-4000824",
+    "DWE-4000891",
+    "DWE-4001368",
+    "DWE-4001410",
+    "DWE-4001424",
+    "DWE-4001442",
+    "DWE-4002045",
+    "DWE-4002105",
+    "DWE-4002247",
+    "DWE-4002374",
+    "DWE-4002712",
+    "DWE-4002806",
+    "DWE-4003067",
+    "MAG-4000075",
+    "MAG-4000145",
+    "MAG-4000283",
+    "MAG-4000675",
+    "MAG-4000870",
+    "MAG-4000883",
+    "MAG-4001467",
+    "MAG-4001981",
+    "MAG-4002092",
+    "MAG-4002491",
+    "MAG-4002776",
+    "MAG-4003100",
+    "SQU-4000224",
+    "SQU-4000308",
+    "SQU-4000459",
+    "SQU-4000583",
+    "SQU-4001225",
+    "SQU-4001342",
+    "SQU-4001601",
+    "SQU-4002391",
+    "SQU-4002483",
+    "SQU-4002544",
+    "ZER-4000021",
+    "ZER-4000995",
+    "ZER-4001161",
+    "ZER-4001287",
+    "ZER-4001669",
+    "ZER-4001686",
+    "ZER-4001726",
+    "ZER-4001844",
+    "ZER-4002091",
+    "ZER-4002305",
+    "ZER-4002352",
+    "ZER-4002683"
+  ],
+  "byReason": {
+    "price <= 0": [
+      "ZER-4000021",
+      "SQU-4002483",
+      "DWE-4001424",
+      "ZER-4001287",
+      "MAG-4000145",
+      "100-4000457",
+      "DWE-4002374",
+      "ZER-4001669",
+      "ZER-4001686"
+    ],
+    "carpet_area > super_built_up_area": [
+      "ZER-4001161",
+      "MAG-4000283",
+      "DWE-4003067",
+      "SQU-4001225",
+      "DWE-4002712",
+      "SQU-4000308",
+      "DWE-4001442",
+      "DWE-4000412",
+      "100-4002961"
+    ],
+    "floor > total_floors": [
+      "DWE-4002247",
+      "MAG-4001981",
+      "100-4000738",
+      "100-4000491",
+      "100-4000397",
+      "MAG-4003100",
+      "SQU-4000583",
+      "MAG-4002776",
+      "100-4000449"
+    ],
+    "coordinates outside the city: lat/lon transposed": [
+      "100-4001703",
+      "ZER-4001726",
+      "DWE-4001368",
+      "SQU-4000459",
+      "100-4001530",
+      "DWE-4000824",
+      "ZER-4002352",
+      "DWE-4002806",
+      "DWE-4000236"
+    ],
+    "posted_at is in the future": [
+      "ZER-4002305",
+      "100-4000545",
+      "ZER-4002091",
+      "SQU-4002391",
+      "MAG-4000675",
+      "DWE-4001410",
+      "DWE-4000307",
+      "DWE-4002105",
+      "SQU-4002544"
+    ],
+    "zero bedrooms and zero bathrooms on a built property": [
+      "SQU-4000224",
+      "MAG-4000883",
+      "100-4002832",
+      "MAG-4002491",
+      "ZER-4001844",
+      "ZER-4000995",
+      "DWE-4000891",
+      "SQU-4001601",
+      "DWE-4002045"
+    ],
+    "sale price is ~1/1000 of any possible price": [
+      "DWE-4000745",
+      "100-4001961",
+      "SQU-4001342",
+      "MAG-4000870",
+      "100-4001484",
+      "MAG-4001467",
+      "MAG-4002092",
+      "MAG-4000075",
+      "ZER-4002683"
+    ]
+  },
+  "detail": {
+    "ZER-4000021": [
+      "price <= 0"
+    ],
+    "SQU-4002483": [
+      "price <= 0"
+    ],
+    "DWE-4001424": [
+      "price <= 0"
+    ],
+    "ZER-4001287": [
+      "price <= 0"
+    ],
+    "MAG-4000145": [
+      "price <= 0"
+    ],
+    "100-4000457": [
+      "price <= 0"
+    ],
+    "DWE-4002374": [
+      "price <= 0"
+    ],
+    "ZER-4001669": [
+      "price <= 0"
+    ],
+    "ZER-4001686": [
+      "price <= 0"
+    ],
+    "ZER-4001161": [
+      "carpet_area > super_built_up_area"
+    ],
+    "MAG-4000283": [
+      "carpet_area > super_built_up_area"
+    ],
+    "DWE-4003067": [
+      "carpet_area > super_built_up_area"
+    ],
+    "SQU-4001225": [
+      "carpet_area > super_built_up_area"
+    ],
+    "DWE-4002712": [
+      "carpet_area > super_built_up_area"
+    ],
+    "SQU-4000308": [
+      "carpet_area > super_built_up_area"
+    ],
+    "DWE-4001442": [
+      "carpet_area > super_built_up_area"
+    ],
+    "DWE-4000412": [
+      "carpet_area > super_built_up_area"
+    ],
+    "100-4002961": [
+      "carpet_area > super_built_up_area"
+    ],
+    "DWE-4002247": [
+      "floor > total_floors"
+    ],
+    "MAG-4001981": [
+      "floor > total_floors"
+    ],
+    "100-4000738": [
+      "floor > total_floors"
+    ],
+    "100-4000491": [
+      "floor > total_floors"
+    ],
+    "100-4000397": [
+      "floor > total_floors"
+    ],
+    "MAG-4003100": [
+      "floor > total_floors"
+    ],
+    "SQU-4000583": [
+      "floor > total_floors"
+    ],
+    "MAG-4002776": [
+      "floor > total_floors"
+    ],
+    "100-4000449": [
+      "floor > total_floors"
+    ],
+    "100-4001703": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "ZER-4001726": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "DWE-4001368": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "SQU-4000459": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "100-4001530": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "DWE-4000824": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "ZER-4002352": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "DWE-4002806": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "DWE-4000236": [
+      "coordinates outside the city: lat/lon transposed"
+    ],
+    "ZER-4002305": [
+      "posted_at is in the future"
+    ],
+    "100-4000545": [
+      "posted_at is in the future"
+    ],
+    "ZER-4002091": [
+      "posted_at is in the future"
+    ],
+    "SQU-4002391": [
+      "posted_at is in the future"
+    ],
+    "MAG-4000675": [
+      "posted_at is in the future"
+    ],
+    "DWE-4001410": [
+      "posted_at is in the future"
+    ],
+    "DWE-4000307": [
+      "posted_at is in the future"
+    ],
+    "DWE-4002105": [
+      "posted_at is in the future"
+    ],
+    "SQU-4002544": [
+      "posted_at is in the future"
+    ],
+    "SQU-4000224": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "MAG-4000883": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "100-4002832": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "MAG-4002491": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "ZER-4001844": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "ZER-4000995": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "DWE-4000891": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "SQU-4001601": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "DWE-4002045": [
+      "zero bedrooms and zero bathrooms on a built property"
+    ],
+    "DWE-4000745": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "100-4001961": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "SQU-4001342": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "MAG-4000870": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "100-4001484": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "MAG-4001467": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "MAG-4002092": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "MAG-4000075": [
+      "sale price is ~1/1000 of any possible price"
+    ],
+    "ZER-4002683": [
+      "sale price is ~1/1000 of any possible price"
+    ]
+  }
+}

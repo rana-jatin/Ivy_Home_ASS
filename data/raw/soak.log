@@ -9,3 +9,11 @@
 [486s] /v1/listings -> 200 
 [546s] /v1/listings -> 200 
 [607s] /v1/listings -> 200 
+[667s] /v1/listings -> 200 
+[727s] /v1/listings -> 200 
+[789s] /v1/listings -> 200 
+[850s] /v1/listings -> 200 
+[911s] /v1/listings -> 401 access token expired - POST /auth/refresh with your refresh_token
+[911s] refresh -> 200 keys=access_token,refresh_token,token_type,expires_in,refresh_url,user
+[911s] authed call after refresh -> 200
+wrote data/raw/probe-02-token-ttl.json
