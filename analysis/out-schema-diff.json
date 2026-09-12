@@ -1,0 +1,578 @@
+{
+  "listings": {
+    "records": 4100,
+    "undocumented_fields": [
+      {
+        "field": "is_live",
+        "present_in": 4100,
+        "nulls": 0,
+        "types": [
+          "boolean"
+        ],
+        "sample": true
+      }
+    ],
+    "documented_but_absent": [],
+    "not_on_every_record": [],
+    "all_fields": [
+      {
+        "field": "apartment_name",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "balcony",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "bathroom",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "bedroom",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "carpet_area",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "city_id",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "covered_parking",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "description",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "facing_direction",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "floor",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "furnishing",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "is_live",
+        "types": [
+          "boolean"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "is_verified",
+        "types": [
+          "boolean"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "latitude",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "listing_id",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "listing_url",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "locality",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "longitude",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_at",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_by",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_by_contact",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_by_name",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "price",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "project_id",
+        "types": [
+          "string"
+        ],
+        "nulls": 1600
+      },
+      {
+        "field": "property_type",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "super_built_up_area",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "total_floors",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "website",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      }
+    ]
+  },
+  "rentals": {
+    "records": 1550,
+    "undocumented_fields": [
+      {
+        "field": "is_live",
+        "present_in": 1550,
+        "nulls": 0,
+        "types": [
+          "boolean"
+        ],
+        "sample": true
+      }
+    ],
+    "documented_but_absent": [],
+    "not_on_every_record": [],
+    "all_fields": [
+      {
+        "field": "apartment_name",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "bathroom",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "bedroom",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "carpet_area",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "city_id",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "deposit",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "description",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "facing_direction",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "floor",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "furnishing",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "is_live",
+        "types": [
+          "boolean"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "latitude",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "listing_id",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "listing_url",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "locality",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "longitude",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "maintenance",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_at",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_by",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_by_contact",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "posted_by_name",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "price",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "property_type",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "super_builtup_area",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "title",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "total_floors",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "website",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      }
+    ]
+  },
+  "projects": {
+    "records": 460,
+    "undocumented_fields": [],
+    "documented_but_absent": [],
+    "not_on_every_record": [],
+    "all_fields": [
+      {
+        "field": "amenities",
+        "types": [
+          "array"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "apartment_name",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "city_id",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "developer_name",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "latitude",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "launch_date",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "locality",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "longitude",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "max_area_sqft",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "min_area_sqft",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "possession_date",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "price_max",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "price_min",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "project_id",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "project_status",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "project_url",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "rera_number",
+        "types": [
+          "string"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "total_floors",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "total_listings",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "total_towers",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      },
+      {
+        "field": "total_units",
+        "types": [
+          "number"
+        ],
+        "nulls": 0
+      }
+    ]
+  }
+}

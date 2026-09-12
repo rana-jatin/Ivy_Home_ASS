@@ -1,0 +1,602 @@
+{
+  "/v1/listings price asc": {
+    "path": "/v1/listings",
+    "sort_by": "price",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      -18100000,
+      -15660000,
+      -13360000,
+      -11350000,
+      -10330000,
+      -10200000
+    ],
+    "other_columns_monotonic": [
+      "price"
+    ]
+  },
+  "/v1/listings price desc": {
+    "path": "/v1/listings",
+    "sort_by": "price",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      27250000,
+      27050000,
+      26450000,
+      26420000,
+      26380000,
+      26320000
+    ],
+    "other_columns_monotonic": [
+      "price"
+    ]
+  },
+  "/v1/listings carpet_area asc": {
+    "path": "/v1/listings",
+    "sort_by": "carpet_area",
+    "order": "asc",
+    "monotonic": false,
+    "break_count": 3,
+    "first_breaks": [
+      {
+        "i": 10,
+        "prev": 366,
+        "cur": 34,
+        "id": "MAG-4002620"
+      },
+      {
+        "i": 23,
+        "prev": 380,
+        "cur": 35,
+        "id": "MAG-4001178"
+      },
+      {
+        "i": 43,
+        "prev": 404,
+        "cur": 38,
+        "id": "MAG-4001947"
+      }
+    ],
+    "head": [
+      292,
+      306,
+      327,
+      337,
+      337,
+      339
+    ],
+    "other_columns_monotonic": [
+      "bedroom",
+      "bathroom"
+    ]
+  },
+  "/v1/listings carpet_area desc": {
+    "path": "/v1/listings",
+    "sort_by": "carpet_area",
+    "order": "desc",
+    "monotonic": false,
+    "break_count": 5,
+    "first_breaks": [
+      {
+        "i": 1,
+        "prev": 276,
+        "cur": 2965,
+        "id": "DWE-4000412"
+      },
+      {
+        "i": 8,
+        "prev": 236,
+        "cur": 2502,
+        "id": "ZER-4002075"
+      },
+      {
+        "i": 16,
+        "prev": 225,
+        "cur": 2395,
+        "id": "DWE-4003489"
+      },
+      {
+        "i": 32,
+        "prev": 206,
+        "cur": 2200,
+        "id": "100-4001641"
+      }
+    ],
+    "head": [
+      276,
+      2965,
+      2947,
+      2891,
+      2705,
+      2661
+    ],
+    "other_columns_monotonic": []
+  },
+  "/v1/listings posted_at asc": {
+    "path": "/v1/listings",
+    "sort_by": "posted_at",
+    "order": "asc",
+    "monotonic": false,
+    "break_count": 27,
+    "first_breaks": [
+      {
+        "i": 1,
+        "prev": "2026-01-13T15:09:00Z",
+        "cur": "2026-01-13T12:04:00Z",
+        "id": "ZER-4002522"
+      },
+      {
+        "i": 2,
+        "prev": "2026-01-13T12:04:00Z",
+        "cur": "2026-01-12T20:49:00Z",
+        "id": "SQU-4001733"
+      },
+      {
+        "i": 4,
+        "prev": "2026-01-13T15:11:00Z",
+        "cur": "2026-01-13T10:34:00Z",
+        "id": "100-4001123"
+      },
+      {
+        "i": 5,
+        "prev": "2026-01-13T10:34:00Z",
+        "cur": "2026-01-12T22:08:00Z",
+        "id": "100-4002580"
+      }
+    ],
+    "head": [
+      "2026-01-13T15:09:00Z",
+      "2026-01-13T12:04:00Z",
+      "2026-01-12T20:49:00Z",
+      "2026-01-13T15:11:00Z",
+      "2026-01-13T10:34:00Z",
+      "2026-01-12T22:08:00Z"
+    ],
+    "other_columns_monotonic": []
+  },
+  "/v1/listings posted_at desc": {
+    "path": "/v1/listings",
+    "sort_by": "posted_at",
+    "order": "desc",
+    "monotonic": false,
+    "break_count": 17,
+    "first_breaks": [
+      {
+        "i": 11,
+        "prev": "2026-09-09T10:18:00Z",
+        "cur": "2026-09-09T18:16:00Z",
+        "id": "DWE-4003207"
+      },
+      {
+        "i": 13,
+        "prev": "2026-09-08T23:42:00Z",
+        "cur": "2026-09-09T14:29:00Z",
+        "id": "100-4002392"
+      },
+      {
+        "i": 15,
+        "prev": "2026-09-09T12:01:00Z",
+        "cur": "2026-09-09T14:55:00Z",
+        "id": "DWE-4000060"
+      },
+      {
+        "i": 16,
+        "prev": "2026-09-09T14:55:00Z",
+        "cur": "2026-09-09T16:17:00Z",
+        "id": "100-4003922"
+      }
+    ],
+    "head": [
+      "2027-07-03T18:31:00Z",
+      "2027-06-23T08:18:00Z",
+      "2027-05-04T01:13:00Z",
+      "2027-02-26T23:19:00Z",
+      "2027-01-29T15:44:00Z",
+      "2026-12-19T11:25:00Z"
+    ],
+    "other_columns_monotonic": []
+  },
+  "/v1/listings bedroom asc": {
+    "path": "/v1/listings",
+    "sort_by": "bedroom",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "other_columns_monotonic": [
+      "bedroom",
+      "bathroom"
+    ]
+  },
+  "/v1/listings bedroom desc": {
+    "path": "/v1/listings",
+    "sort_by": "bedroom",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "other_columns_monotonic": [
+      "bedroom"
+    ]
+  },
+  "/v1/rentals price asc": {
+    "path": "/v1/rentals",
+    "sort_by": "price",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      8000,
+      8200,
+      8500,
+      8900,
+      9100,
+      9100
+    ],
+    "other_columns_monotonic": [
+      "price",
+      "bedroom"
+    ]
+  },
+  "/v1/rentals price desc": {
+    "path": "/v1/rentals",
+    "sort_by": "price",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      93200,
+      89400,
+      88000,
+      87600,
+      85600,
+      85400
+    ],
+    "other_columns_monotonic": [
+      "price"
+    ]
+  },
+  "/v1/rentals carpet_area asc": {
+    "path": "/v1/rentals",
+    "sort_by": "carpet_area",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      291,
+      299,
+      306,
+      310,
+      315,
+      318
+    ],
+    "other_columns_monotonic": [
+      "carpet_area",
+      "bedroom"
+    ]
+  },
+  "/v1/rentals carpet_area desc": {
+    "path": "/v1/rentals",
+    "sort_by": "carpet_area",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      1581,
+      1581,
+      1570,
+      1568,
+      1567,
+      1563
+    ],
+    "other_columns_monotonic": [
+      "carpet_area",
+      "bedroom"
+    ]
+  },
+  "/v1/rentals posted_at asc": {
+    "path": "/v1/rentals",
+    "sort_by": "posted_at",
+    "order": "asc",
+    "monotonic": false,
+    "break_count": 23,
+    "first_breaks": [
+      {
+        "i": 1,
+        "prev": "2026-05-13T18:24:00Z",
+        "cur": "2026-05-13T05:40:00Z",
+        "id": "R4000135"
+      },
+      {
+        "i": 4,
+        "prev": "2026-05-13T14:27:00Z",
+        "cur": "2026-05-13T05:41:00Z",
+        "id": "R4000352"
+      },
+      {
+        "i": 6,
+        "prev": "2026-05-13T12:07:00Z",
+        "cur": "2026-05-12T21:09:00Z",
+        "id": "R4000606"
+      },
+      {
+        "i": 8,
+        "prev": "2026-05-13T10:02:00Z",
+        "cur": "2026-05-13T07:51:00Z",
+        "id": "R4001022"
+      }
+    ],
+    "head": [
+      "2026-05-13T18:24:00Z",
+      "2026-05-13T05:40:00Z",
+      "2026-05-13T07:41:00Z",
+      "2026-05-13T14:27:00Z",
+      "2026-05-13T05:41:00Z",
+      "2026-05-13T12:07:00Z"
+    ],
+    "other_columns_monotonic": []
+  },
+  "/v1/rentals posted_at desc": {
+    "path": "/v1/rentals",
+    "sort_by": "posted_at",
+    "order": "desc",
+    "monotonic": false,
+    "break_count": 21,
+    "first_breaks": [
+      {
+        "i": 1,
+        "prev": "2026-09-09T05:27:00Z",
+        "cur": "2026-09-09T16:16:00Z",
+        "id": "R4000104"
+      },
+      {
+        "i": 3,
+        "prev": "2026-09-09T10:22:00Z",
+        "cur": "2026-09-09T12:23:00Z",
+        "id": "R4000240"
+      },
+      {
+        "i": 6,
+        "prev": "2026-09-08T20:06:00Z",
+        "cur": "2026-09-08T22:47:00Z",
+        "id": "R4000605"
+      },
+      {
+        "i": 7,
+        "prev": "2026-09-08T22:47:00Z",
+        "cur": "2026-09-09T14:54:00Z",
+        "id": "R4000657"
+      }
+    ],
+    "head": [
+      "2026-09-09T05:27:00Z",
+      "2026-09-09T16:16:00Z",
+      "2026-09-09T10:22:00Z",
+      "2026-09-09T12:23:00Z",
+      "2026-09-09T03:16:00Z",
+      "2026-09-08T20:06:00Z"
+    ],
+    "other_columns_monotonic": []
+  },
+  "/v1/rentals bedroom asc": {
+    "path": "/v1/rentals",
+    "sort_by": "bedroom",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "other_columns_monotonic": [
+      "bedroom"
+    ]
+  },
+  "/v1/rentals bedroom desc": {
+    "path": "/v1/rentals",
+    "sort_by": "bedroom",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "other_columns_monotonic": [
+      "bedroom"
+    ]
+  },
+  "/v1/projects price_min asc": {
+    "path": "/v1/projects",
+    "sort_by": "price_min",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      32,
+      32.6,
+      33.8,
+      34.3,
+      35.5,
+      35.7
+    ],
+    "other_columns_monotonic": [
+      "price_min"
+    ]
+  },
+  "/v1/projects price_min desc": {
+    "path": "/v1/projects",
+    "sort_by": "price_min",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      1.39,
+      1.37,
+      1.36,
+      1.36,
+      1.34,
+      1.3
+    ],
+    "other_columns_monotonic": [
+      "price_min"
+    ]
+  },
+  "/v1/projects price_max asc": {
+    "path": "/v1/projects",
+    "sort_by": "price_max",
+    "order": "asc",
+    "monotonic": false,
+    "break_count": 1,
+    "first_breaks": [
+      {
+        "i": 27,
+        "prev": 99.8,
+        "cur": 1.01,
+        "id": "P40160"
+      }
+    ],
+    "head": [
+      70.2,
+      74.1,
+      76.6,
+      77.7,
+      80.2,
+      80.4
+    ],
+    "other_columns_monotonic": []
+  },
+  "/v1/projects price_max desc": {
+    "path": "/v1/projects",
+    "sort_by": "price_max",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      3.78,
+      3.64,
+      3.6,
+      3.6,
+      3.56,
+      3.53
+    ],
+    "other_columns_monotonic": [
+      "price_max"
+    ]
+  },
+  "/v1/projects launch_date asc": {
+    "path": "/v1/projects",
+    "sort_by": "launch_date",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      "2020-02-26",
+      "2020-03-09",
+      "2020-03-14",
+      "2020-03-16",
+      "2020-03-17",
+      "2020-04-02"
+    ],
+    "other_columns_monotonic": [
+      "launch_date"
+    ]
+  },
+  "/v1/projects launch_date desc": {
+    "path": "/v1/projects",
+    "sort_by": "launch_date",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      "2026-02-21",
+      "2026-02-20",
+      "2026-02-12",
+      "2026-02-10",
+      "2026-02-09",
+      "2026-02-02"
+    ],
+    "other_columns_monotonic": [
+      "launch_date"
+    ]
+  },
+  "/v1/projects total_units asc": {
+    "path": "/v1/projects",
+    "sort_by": "total_units",
+    "order": "asc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      85,
+      93,
+      94,
+      102,
+      102,
+      110
+    ],
+    "other_columns_monotonic": [
+      "total_units"
+    ]
+  },
+  "/v1/projects total_units desc": {
+    "path": "/v1/projects",
+    "sort_by": "total_units",
+    "order": "desc",
+    "monotonic": true,
+    "break_count": 0,
+    "first_breaks": [],
+    "head": [
+      2391,
+      2390,
+      2387,
+      2385,
+      2379,
+      2378
+    ],
+    "other_columns_monotonic": [
+      "total_units"
+    ]
+  }
+}

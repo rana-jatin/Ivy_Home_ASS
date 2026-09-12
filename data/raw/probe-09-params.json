@@ -1,0 +1,401 @@
+[
+  {
+    "path": "/v1/listings",
+    "query": "{\"locality\":\"velachery\"}",
+    "status": 200,
+    "total": 406,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"bhk\":2}",
+    "status": 200,
+    "total": 1324,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"property_type\":\"villa\"}",
+    "status": 200,
+    "total": 333,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"min_price\":20000000}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 49,
+    "sample_violation": {
+      "id": "MAG-4001518",
+      "got": 6610000
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"max_price\":3000000}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 49,
+    "sample_violation": {
+      "id": "MAG-4001518",
+      "got": 6610000
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"furnishing\":\"fully-furnished\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 29,
+    "sample_violation": {
+      "id": "MAG-4001518",
+      "got": "semi-furnished"
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"project_id\":\"P40001\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 50,
+    "sample_violation": {
+      "id": "MAG-4001518",
+      "got": "P40244"
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"bedroom\":2}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 33,
+    "sample_violation": {
+      "id": "100-4000035",
+      "got": 3
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"bedrooms\":2}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 33,
+    "sample_violation": {
+      "id": "100-4000035",
+      "got": 3
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"is_live\":true}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 6,
+    "sample_violation": {
+      "id": "100-4003009",
+      "got": false
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"is_live\":\"false\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 44,
+    "sample_violation": {
+      "id": "MAG-4001518",
+      "got": true
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"website\":\"100acres\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": 35,
+    "sample_violation": {
+      "id": "MAG-4001518",
+      "got": "magichomes"
+    }
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"verified\":true}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"totally_made_up_param\":\"xyzzy\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"price\",\"order\":\"asc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      -18100000,
+      -15660000,
+      -13360000,
+      -11350000
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"price\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      27250000,
+      27050000,
+      26450000,
+      26420000
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"carpet_area\",\"order\":\"asc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": false,
+    "head": [
+      292,
+      306,
+      327,
+      337
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"carpet_area\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": false,
+    "head": [
+      276,
+      2965,
+      2947,
+      2891
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"posted_at\",\"order\":\"asc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": false,
+    "head": [
+      "2026-01-13T15:09:00Z",
+      "2026-01-13T12:04:00Z",
+      "2026-01-12T20:49:00Z",
+      "2026-01-13T15:11:00Z"
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"posted_at\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": false,
+    "head": [
+      "2027-07-03T18:31:00Z",
+      "2027-06-23T08:18:00Z",
+      "2027-05-04T01:13:00Z",
+      "2027-02-26T23:19:00Z"
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"bedroom\",\"order\":\"asc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"bedroom\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 3923,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      5,
+      5,
+      5,
+      5
+    ]
+  },
+  {
+    "path": "/v1/listings",
+    "query": "{\"sort_by\":\"not_a_field\"}",
+    "status": 400,
+    "count": 0,
+    "violations": null,
+    "sample_violation": null,
+    "detail": "cannot sort by 'not_a_field'; sortable fields: ['bedroom', 'carpet_area', 'posted_at', 'price']"
+  },
+  {
+    "path": "/v1/rentals",
+    "query": "{\"locality\":\"velachery\"}",
+    "status": 200,
+    "total": 127,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/rentals",
+    "query": "{\"bhk\":2}",
+    "status": 200,
+    "total": 566,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/rentals",
+    "query": "{\"furnishing\":\"fully-furnished\"}",
+    "status": 200,
+    "total": 490,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/projects",
+    "query": "{\"locality\":\"velachery\"}",
+    "status": 200,
+    "total": 36,
+    "count": 38,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/projects",
+    "query": "{\"project_status\":\"under construction\"}",
+    "status": 200,
+    "total": 139,
+    "count": 50,
+    "violations": 0,
+    "sample_violation": null
+  },
+  {
+    "path": "/v1/projects",
+    "query": "{\"sort_by\":\"price_min\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 440,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      1.39,
+      1.37,
+      1.36,
+      1.36
+    ]
+  },
+  {
+    "path": "/v1/projects",
+    "query": "{\"sort_by\":\"price_max\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 440,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      3.78,
+      3.64,
+      3.6,
+      3.6
+    ]
+  },
+  {
+    "path": "/v1/projects",
+    "query": "{\"sort_by\":\"launch_date\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 440,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      "2026-02-21",
+      "2026-02-20",
+      "2026-02-12",
+      "2026-02-10"
+    ]
+  },
+  {
+    "path": "/v1/projects",
+    "query": "{\"sort_by\":\"total_units\",\"order\":\"desc\"}",
+    "status": 200,
+    "total": 440,
+    "count": 50,
+    "violations": null,
+    "sample_violation": null,
+    "sorted_correctly": true,
+    "head": [
+      2391,
+      2390,
+      2387,
+      2385
+    ]
+  }
+]
