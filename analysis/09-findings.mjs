@@ -78,13 +78,13 @@ add('*', 'pagination',
   'the documented recipe silently drops 177 listings, 67 rentals and 20 projects - 4.3% of the listing data - and every count computed from it is wrong');
 
 // ----------------------------------------------------- missing endpoint ----
-add('/v1/listing/{listing_id}', 'missing_endpoint',
+add('/v1/listing/{id}', 'missing_endpoint',
   'GET /v1/listing/{listing_id} returns a single listing',
   '404. The singular path does not exist; single listings are served from GET /v1/listings/{listing_id}, which returns a record identical to the one in the collection',
   'probe/03-endpoint-sweep.mjs requested both spellings with a listing_id taken from a real response',
   'the detail page 404s until the path is corrected');
 
-add('/v1/listings/{listing_id}/similar', 'missing_endpoint',
+add('/v1/listings/{id}/similar', 'missing_endpoint',
   'up to ten comparable listings - same locality, same bedroom count, price within 15%',
   '404 under both /v1/listings/{id}/similar and /v1/listing/{id}/similar. The endpoint does not exist at any spelling probed',
   'probe/03-endpoint-sweep.mjs',

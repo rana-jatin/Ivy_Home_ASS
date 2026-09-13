@@ -90,7 +90,7 @@
     "evidence": []
   },
   {
-    "endpoint": "/v1/listing/{listing_id}",
+    "endpoint": "/v1/listing/{id}",
     "category": "missing_endpoint",
     "documented": "GET /v1/listing/{listing_id} returns a single listing",
     "actual": "404. The singular path does not exist; single listings are served from GET /v1/listings/{listing_id}, which returns a record identical to the one in the collection",
@@ -99,7 +99,7 @@
     "evidence": []
   },
   {
-    "endpoint": "/v1/listings/{listing_id}/similar",
+    "endpoint": "/v1/listings/{id}/similar",
     "category": "missing_endpoint",
     "documented": "up to ten comparable listings - same locality, same bedroom count, price within 15%",
     "actual": "404 under both /v1/listings/{id}/similar and /v1/listing/{id}/similar. The endpoint does not exist at any spelling probed",

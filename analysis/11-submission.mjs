@@ -83,6 +83,9 @@ findings.forEach((f, i) => {
   // path params must be written as {id}
   need(!/\/(?:100|MAG|DWE|SQU|ZER)-\d+|\/P4\d{4}|\/R4\d{6}/.test(f.endpoint),
     `findings[${i}].endpoint "${f.endpoint}" contains a literal id instead of {id}`);
+  // and a named placeholder like {listing_id} is still not {id}
+  need(!/\{(?!id\})[^}]*\}/.test(f.endpoint),
+    `findings[${i}].endpoint "${f.endpoint}" names its path parameter; the spec wants {id}`);
 });
 
 if (problems.length) {
