@@ -6,7 +6,7 @@
 // everything around them is the design's.
 
 import { useState, type FormEvent } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { login, sessionEndReason } from '../api/client';
 import scene from '../assets/login/scene.jpg';
 import sceneMobile from '../assets/login/scene-mobile.jpg';
@@ -16,8 +16,6 @@ import { useTitle } from '../lib/useTitle';
 const DEMO = ['demo1@ivy.homes', 'demo2@ivy.homes', 'demo3@ivy.homes'];
 
 type Intent = 'sell' | 'buy';
-// Where a sign-in from the bare root lands. A deep link keeps its own page.
-const LANDING: Record<Intent, string> = { sell: '/sell', buy: '/listings' };
 
 // Remembered between visits: who signed in last, and what they came to do.
 const LAST_EMAIL = 'ivy.lastEmail';
@@ -46,7 +44,6 @@ const stillness = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').
 export default function Login({ onEntered }: { onEntered: () => void }) {
   useTitle('Sign in');
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const [returning] = useState(() => !!recall(LAST_EMAIL) || !!sessionEndReason());
   const [email, setEmail] = useState(() => {
     const last = recall(LAST_EMAIL);
@@ -78,7 +75,7 @@ export default function Login({ onEntered }: { onEntered: () => void }) {
     await wait(still ? 0 : LIGHTS_MS);
     setLeaving(true);
     await wait(still ? 0 : WASH_MS);
-    if (pathname === '/') navigate(LANDING[intent], { replace: true });
+    navigate('/sell', { replace: true });
     onEntered();
   }
 

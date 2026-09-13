@@ -50,7 +50,7 @@ function Chrome() {
       <ScrollManager />
       <ErrorBoundary key={pathname}>
         <Routes>
-          <Route path="/" element={<Navigate to="/listings" replace />} />
+          <Route path="/" element={<Navigate to="/sell" replace />} />
           <Route path="/sell" element={<Sell />} />
           <Route path="/listings" element={<Browse />} />
           <Route path="/listings/:id" element={<Detail />} />
