@@ -13,7 +13,7 @@ README explains how I got there, including the ideas that turned out to be wrong
 
 | | |
 | --- | --- |
-| **Live app** | https://ivy-home-ass007-delta.vercel.app |
+| **Live app** | https://ivy-home-ass-rqar.vercel.app |
 | **City** | Chennai |
 | **Assigned locality** | Velachery |
 | **Reference moment** | `2026-09-10T00:00:00+05:30` (IST) |
