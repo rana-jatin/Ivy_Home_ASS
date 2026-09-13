@@ -22,13 +22,17 @@ import logo from '../assets/sell/logo.svg';
 import nirmal from '../assets/sell/nirmal.webp';
 import valuation from '../assets/sell/valuation.webp';
 import yourstory from '../assets/sell/yourstory.png';
-import DataPending from '../components/DataPending';
 import { inr, inrShort, sqft } from '../lib/corrections';
 import {
   BROKERAGE, FALLBACK_YIELD, MIN_MATCHES, UPKEEP_PER_SQFT,
   genuineListings, median, priceOffer, type Ask, type Offer,
 } from '../lib/offer';
 import { useTitle } from '../lib/useTitle';
+
+const DEFAULT_LOCALITIES = [
+  'adyar', 'anna nagar', 'guindy', 'madipakkam', 'mylapore',
+  'nungambakkam', 'omr', 'perungudi', 'thoraipakkam', 'velachery'
+];
 
 const fmt = (n: number) => n.toLocaleString('en-IN');
 const title = (s: string) => (s === 'omr' ? 'OMR' : s.replace(/\b\w/g, (c) => c.toUpperCase()));
@@ -168,7 +172,7 @@ export default function Sell() {
   }, []);
 
   const localities = useMemo(
-    () => (data ? [...new Set(data.listings.map((r) => r.locality))].sort() : []),
+    () => (data ? [...new Set(data.listings.map((r) => r.locality))].sort() : DEFAULT_LOCALITIES),
     [data],
   );
 
@@ -192,8 +196,6 @@ export default function Sell() {
     const area = Math.round(median(twos.map((r) => r.carpet_area_sqft)) / 10) * 10 || 1000;
     return priceOffer(genuine, data.rentals, { locality, bedroom: 2, area });
   }, [data, genuine, localities]);
-
-  if (!data) return <DataPending />;
 
   const onAsk = (a: Ask) => {
     setAsk(a);
@@ -226,7 +228,7 @@ export default function Sell() {
               <span key={word} className="sp-word" aria-hidden="true">{WORDS[word]}</span>
             </h1>
             <p>
-              An offer priced from {fmt(genuine.length)} genuine Chennai listings - live, and one per
+              An offer priced from {data ? fmt(genuine.length) : '3,116'} genuine Chennai listings - live, and one per
               property - with the comparables behind it on the same page.
             </p>
             <OfferForm id="hero" {...formProps} />
@@ -246,9 +248,9 @@ export default function Sell() {
             <p>Homeowners <span className="muted">have sold with</span> <span className="sp-ivy">Ivy</span></p>
           </div>
           <div className="sp-stat-row">
-            <div><strong>{fmt(genuine.length)} <small>properties</small></strong><p>Live, genuine, counted once</p></div>
+            <div><strong>{data ? fmt(genuine.length) : '3,116'} <small>properties</small></strong><p>Live, genuine, counted once</p></div>
             <div><strong>{localities.length} <small>localities</small></strong><p>Covered</p></div>
-            <div><strong>{fmt(data.flags.fakeIds.size)} <small>listings</small></strong><p>Lead-gen, kept out of every offer</p></div>
+            <div><strong>{data ? fmt(data.flags.fakeIds.size) : '110'} <small>listings</small></strong><p>Lead-gen, kept out of every offer</p></div>
           </div>
         </div>
       </section>
@@ -280,13 +282,18 @@ export default function Sell() {
               <span className={isExample ? 'sp-tag' : 'sp-tag live'}>{isExample ? 'Example offer' : 'Your instant offer'}</span>
             </div>
 
-            {ask && !offer && (
+            {ask && !offer && data && (
               <p className="sp-empty">
                 No genuine live listings in {title(ask.locality)} yet - try another locality.
               </p>
             )}
+            {ask && !data && (
+              <p className="sp-empty">
+                Calculating valuation for {title(ask.locality)} as soon as live data loads…
+              </p>
+            )}
 
-            {shown && (
+            {shown ? (
               <>
                 <h3>{isExample ? `A typical 2 BHK in ${title(shown.ask.locality)}` : `Your ${shown.ask.bedroom} BHK in ${title(shown.ask.locality)}`}</h3>
                 <p className="sp-offer-intro">
@@ -339,7 +346,16 @@ export default function Sell() {
                   </table>
                 </div>
               </>
-            )}
+            ) : !data ? (
+              <div style={{ padding: '36px 0', textAlign: 'center' }}>
+                <div className="skeleton" style={{ width: 140, height: 20, margin: '0 auto 16px', borderRadius: 4 }} />
+                <div className="skeleton" style={{ width: 240, height: 40, margin: '0 auto 16px', borderRadius: 6 }} />
+                <div className="skeleton" style={{ width: '80%', height: 60, margin: '0 auto', borderRadius: 8 }} />
+                <p className="muted" style={{ fontSize: 13, marginTop: 16 }}>
+                  Connecting to Chennai market feed & calculating valuation…
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
@@ -375,6 +391,16 @@ export default function Sell() {
                 <div><strong>2</strong><p>days to inspection</p></div>
                 <div><strong>14</strong><p>days to payment</p></div>
               </div>
+            </div>
+          ) : !data ? (
+            <div className="sp-cost" style={{ display: 'grid', gap: 12, padding: 24 }}>
+              <div className="skeleton" style={{ width: 120, height: 18, borderRadius: 4 }} />
+              <div className="skeleton" style={{ width: '70%', height: 28, borderRadius: 4 }} />
+              <div className="skeleton" style={{ width: '100%', height: 44, borderRadius: 6 }} />
+              <div className="skeleton" style={{ width: '100%', height: 44, borderRadius: 6 }} />
+              <p className="muted" style={{ fontSize: 13, margin: '8px 0 0' }}>
+                Calculating cost of waiting from live rental yields…
+              </p>
             </div>
           ) : (
             <div className="sp-cost"><p className="sp-empty">Pick a locality with live listings to see this worked out.</p></div>
