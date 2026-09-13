@@ -47,9 +47,10 @@ export type State =
   | { status: 'idle' }
   /** reading the local copy; brief */
   | { status: 'restoring' }
-  /** first pull, nothing to show yet */
-  | { status: 'loading'; progress: Progress }
-  | { status: 'ready'; data: Dataset; refreshing: Progress | null; refreshError: string | null }
+  /** first pull, nothing to show yet; how far it has got is useProgress() */
+  | { status: 'loading' }
+  /** a refresh may be running behind it - useProgress() is non-null while it does */
+  | { status: 'ready'; data: Dataset; refreshError: string | null }
   | { status: 'error'; message: string };
 
 type Ready = Extract<State, { status: 'ready' }>;
@@ -58,9 +59,16 @@ const Ctx = createContext<{ state: State; reload: () => void }>({
   state: { status: 'idle' },
   reload: () => {},
 });
+// Progress changes once per page, about 123 times a pull. It has its own context
+// so that only what draws it re-renders that often, not every screen holding the
+// dataset.
+const ProgressCtx = createContext<Progress | null>(null);
+
 export const useData = () => useContext(Ctx).state;
 /** Pull the city again. Keeps the current copy on screen while it runs. */
 export const useReload = () => useContext(Ctx).reload;
+/** How far the running pull has got - the first one or a refresh - or null if none is running. */
+export const useProgress = () => useContext(ProgressCtx);
 
 /** Narrowing helper so pages can assume a loaded dataset. */
 export function useDataset(): Dataset | null {
@@ -122,6 +130,7 @@ const CANCELLED = Symbol('cancelled');
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>({ status: 'idle' });
+  const [progress, setProgress] = useState<Progress | null>(null);
   const [signedIn, setSignedIn] = useState(() => !!getSession());
   const [attempt, setAttempt] = useState(0);
   const stateRef = useRef(state);
@@ -136,19 +145,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
     if (refreshing.current) return;
     refreshing.current = true;
     const onScreen = (fn: (s: Ready) => State) => setState((s) => (s.status === 'ready' ? fn(s) : s));
-    onScreen((s) => ({ ...s, refreshing: { loaded: 0, declared: 0, stage: 'listings' }, refreshError: null }));
+    // Returning the same object leaves the dataset context alone, so a refresh
+    // that has no old error to clear does not re-render the screen as it starts.
+    onScreen((s) => (s.refreshError ? { ...s, refreshError: null } : s));
+    setProgress({ loaded: 0, declared: 0, stage: 'listings' });
     try {
-      const snap = await pull((p) => onScreen((s) => ({ ...s, refreshing: p })));
+      const snap = await pull(setProgress);
       await writeSnapshot(DATASET_KEY, snap);
-      onScreen(() => ({ status: 'ready', data: build(snap), refreshing: null, refreshError: null }));
+      onScreen(() => ({ status: 'ready', data: build(snap), refreshError: null }));
     } catch (e: any) {
-      onScreen((s) => ({ ...s, refreshing: null, refreshError: e?.message ?? String(e) }));
+      onScreen((s) => ({ ...s, refreshError: e?.message ?? String(e) }));
     } finally {
+      setProgress(null);
       refreshing.current = false;
     }
   }, []);
 
   useEffect(() => {
+    setProgress(null);
     if (!signedIn) {
       setState({ status: 'idle' });
       return;
@@ -159,19 +173,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const cached = await readSnapshot(DATASET_KEY);
       if (cancelled) return;
       if (cached) {
-        setState({ status: 'ready', data: build(cached), refreshing: null, refreshError: null });
+        setState({ status: 'ready', data: build(cached), refreshError: null });
         if (Date.now() - cached.fetchedAt > SNAPSHOT_STALE_MS) void refresh();
         return;
       }
+      setState({ status: 'loading' });
+      setProgress({ loaded: 0, declared: 0, stage: 'listings' });
       try {
-        const snap = await pull((progress) => {
+        const snap = await pull((p) => {
           if (cancelled) throw CANCELLED; // stops the walk at the next page
-          setState({ status: 'loading', progress });
+          setProgress(p);
         });
         void writeSnapshot(DATASET_KEY, snap);
-        if (!cancelled) setState({ status: 'ready', data: build(snap), refreshing: null, refreshError: null });
+        if (!cancelled) setState({ status: 'ready', data: build(snap), refreshError: null });
       } catch (e: any) {
         if (!cancelled) setState({ status: 'error', message: e?.message ?? String(e) });
+      } finally {
+        // a cancelled walk leaves progress to whichever run replaced it
+        if (!cancelled) setProgress(null);
       }
     })();
     return () => {
@@ -185,5 +204,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [refresh]);
 
   const value = useMemo(() => ({ state, reload }), [state, reload]);
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={value}>
+      <ProgressCtx.Provider value={progress}>{children}</ProgressCtx.Provider>
+    </Ctx.Provider>
+  );
 }

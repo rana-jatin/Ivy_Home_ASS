@@ -1,9 +1,10 @@
 // What a screen shows while the dataset it needs is not in memory yet.
 
-import { useData, useReload } from '../api/store';
+import { useData, useProgress, useReload } from '../api/store';
 
 export default function DataPending() {
   const s = useData();
+  const progress = useProgress();
   const reload = useReload();
 
   if (s.status === 'error') {
@@ -20,7 +21,7 @@ export default function DataPending() {
     );
   }
 
-  if (s.status !== 'loading') {
+  if (s.status !== 'loading' || !progress) {
     // Opening the stored copy takes well under a second; hold the shape of a
     // screen rather than flashing a sentence.
     return (
@@ -41,7 +42,7 @@ export default function DataPending() {
     );
   }
 
-  const { loaded, declared, stage } = s.progress;
+  const { loaded, declared, stage } = progress;
   // The bar is drawn against the declared total, which is itself an
   // undercount - so it reaches 100% and keeps going. That is the bug, visible.
   const pct = declared ? Math.min(100, Math.round((loaded / declared) * 100)) : 0;
