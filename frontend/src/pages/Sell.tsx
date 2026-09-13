@@ -29,15 +29,13 @@ import {
 } from '../lib/offer';
 import { useTitle } from '../lib/useTitle';
 
-const DEFAULT_LOCALITIES = [
-  'adyar', 'anna nagar', 'guindy', 'madipakkam', 'mylapore',
-  'nungambakkam', 'omr', 'perungudi', 'thoraipakkam', 'velachery'
-];
-
 const fmt = (n: number) => n.toLocaleString('en-IN');
 const title = (s: string) => (s === 'omr' ? 'OMR' : s.replace(/\b\w/g, (c) => c.toUpperCase()));
 const rate = (pps: number) => `₹${fmt(Math.round(pps))}/ft²`;
 const pct = (share: number) => `${+(share * 100).toFixed(2)}%`;
+// Stands in for a figure until the pull lands. A typed-in number here would be
+// wrong for any other key, and was wrong for this one.
+const Pending = () => <span className="skeleton sp-pending" aria-label="loading" />;
 
 const WORDS = ['live market data', 'zero brokerage', 'no guesswork'];
 
@@ -133,9 +131,9 @@ function OfferForm({ id, form, setForm, localities, onAsk }: {
       <div className="sp-seg sp-seg-loc">
         <span className="sp-seg-icon"><Icon name="search" size={16} /></span>
         <label htmlFor={`${id}-locality`}>Locality</label>
-        <select id={`${id}-locality`} value={form.locality} required
+        <select id={`${id}-locality`} value={form.locality} required disabled={!localities.length}
           onChange={(e) => setForm({ ...form, locality: e.target.value })}>
-          <option value="">Choose locality</option>
+          <option value="">{localities.length ? 'Choose locality' : 'Loading localities…'}</option>
           {localities.map((l) => <option key={l} value={l}>{title(l)}</option>)}
         </select>
       </div>
@@ -172,7 +170,7 @@ export default function Sell() {
   }, []);
 
   const localities = useMemo(
-    () => (data ? [...new Set(data.listings.map((r) => r.locality))].sort() : DEFAULT_LOCALITIES),
+    () => (data ? [...new Set(data.listings.map((r) => r.locality))].sort() : []),
     [data],
   );
 
@@ -228,7 +226,7 @@ export default function Sell() {
               <span key={word} className="sp-word" aria-hidden="true">{WORDS[word]}</span>
             </h1>
             <p>
-              An offer priced from {data ? fmt(genuine.length) : '3,116'} genuine Chennai listings - live, and one per
+              An offer priced from {data ? `${fmt(genuine.length)} ` : ''}genuine Chennai listings - live, and one per
               property - with the comparables behind it on the same page.
             </p>
             <OfferForm id="hero" {...formProps} />
@@ -248,9 +246,9 @@ export default function Sell() {
             <p>Homeowners <span className="muted">have sold with</span> <span className="sp-ivy">Ivy</span></p>
           </div>
           <div className="sp-stat-row">
-            <div><strong>{data ? fmt(genuine.length) : '3,116'} <small>properties</small></strong><p>Live, genuine, counted once</p></div>
-            <div><strong>{localities.length} <small>localities</small></strong><p>Covered</p></div>
-            <div><strong>{data ? fmt(data.flags.fakeIds.size) : '110'} <small>listings</small></strong><p>Lead-gen, kept out of every offer</p></div>
+            <div><strong>{data ? fmt(genuine.length) : <Pending />} <small>properties</small></strong><p>Live, genuine, counted once</p></div>
+            <div><strong>{data ? localities.length : <Pending />} <small>localities</small></strong><p>Covered</p></div>
+            <div><strong>{data ? fmt(data.flags.fakeIds.size) : <Pending />} <small>listings</small></strong><p>Lead-gen, kept out of every offer</p></div>
           </div>
         </div>
       </section>
