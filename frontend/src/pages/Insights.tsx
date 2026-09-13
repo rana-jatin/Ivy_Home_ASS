@@ -10,12 +10,13 @@
 // can be trusted, for someone deciding how much to believe the first half.
 // Figures link to the records behind them.
 
-import { useMemo, type ReactNode } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDataset } from '../api/store';
 import ContactScatter from '../components/charts/ContactScatter';
 import LocalityMultiples, { KM_PER_DEG_LAT, KM_PER_DEG_LON } from '../components/charts/LocalityMultiples';
 import DataPending from '../components/DataPending';
+import Kpi from '../components/Kpi';
 import Pager, { paginate } from '../components/Pager';
 import { OFFLINE_SORT_TEST, REFERENCE, inr, inrShort, type FixedListing } from '../lib/corrections';
 import { AREA_TOL, RADIUS_M, corruptSummary } from '../lib/flags';
@@ -59,17 +60,6 @@ function extent(rs: FixedListing[]) {
     lat: sumLat / rs.length,
     lon: sumLon / rs.length,
   };
-}
-
-function Kpi({ k, v, n, to }: { k: string; v: string; n?: ReactNode; to?: string }) {
-  const body = (
-    <>
-      <div className="k">{k}</div>
-      <div className="v">{v}</div>
-      {n && <div className="n">{n}</div>}
-    </>
-  );
-  return to ? <Link className="kpi link" to={to}>{body}</Link> : <div className="kpi">{body}</div>;
 }
 
 export default function Insights() {

@@ -9,6 +9,7 @@ import { ToastProvider } from './components/Toasts';
 import { WelcomeWash } from './components/Welcome';
 import { SavedProvider } from './lib/saved';
 import Login from './pages/Login';
+import Sell from './pages/Sell';
 import Browse from './pages/Browse';
 import Detail from './pages/Detail';
 import Saved from './pages/Saved';
@@ -27,10 +28,11 @@ function Chrome() {
     <div className="shell" data-dataset={s.status}>
       <header className="top">
         <div className="brand">
-          Ivy Homes
+          <img src="/ivy-homes-logo.png" alt="Ivy Homes" className="logo" />
           <span>{s.status === 'ready' ? s.data.me?.city ?? 'chennai' : 'chennai'}</span>
         </div>
         <nav>
+          <NavLink to="/sell" className={link}>Sell</NavLink>
           <NavLink to="/listings" className={link}>Listings</NavLink>
           <NavLink to="/rentals" className={link}>Rentals</NavLink>
           <NavLink to="/projects" className={link}>Projects</NavLink>
@@ -49,6 +51,7 @@ function Chrome() {
       <ErrorBoundary key={pathname}>
         <Routes>
           <Route path="/" element={<Navigate to="/listings" replace />} />
+          <Route path="/sell" element={<Sell />} />
           <Route path="/listings" element={<Browse />} />
           <Route path="/listings/:id" element={<Detail />} />
           <Route path="/rentals" element={<Rentals />} />

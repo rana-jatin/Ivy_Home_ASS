@@ -58,11 +58,11 @@ function Panel({ locality, mine, others, frame, ratio }: {
       const y = (lat: number) => pad + ((frame.maxLat - lat) / (frame.maxLat - frame.minLat)) * (h - 2 * pad);
 
       ctx.globalAlpha = 0.28;
-      ctx.fillStyle = cssVar('--viz-context') || '#6e7681';
+      ctx.fillStyle = cssVar('--viz-context') || '#7d8794';
       for (const r of others) ctx.fillRect(x(r.longitude_fixed) - 0.75, y(r.latitude_fixed) - 0.75, 1.5, 1.5);
 
       ctx.globalAlpha = 1;
-      ctx.fillStyle = cssVar('--viz-accent') || '#3987e5';
+      ctx.fillStyle = cssVar('--viz-accent') || '#2a78d6';
       for (const r of mine) {
         ctx.beginPath();
         ctx.arc(x(r.longitude_fixed), y(r.latitude_fixed), 1.8, 0, Math.PI * 2);

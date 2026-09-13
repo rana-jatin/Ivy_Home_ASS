@@ -11,3 +11,6 @@ frontend/dist/
 .vercel
 .env*
 !.env.example
+
+# internal planning notes, not part of the submission
+PLAN.md
