@@ -6,7 +6,6 @@
 // everything around them is the design's.
 
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { login, sessionEndReason } from '../api/client';
 import scene from '../assets/login/scene.jpg';
 import sceneMobile from '../assets/login/scene-mobile.jpg';
@@ -43,13 +42,13 @@ const stillness = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').
 
 export default function Login({ onEntered }: { onEntered: () => void }) {
   useTitle('Sign in');
-  const navigate = useNavigate();
   const [returning] = useState(() => !!recall(LAST_EMAIL) || !!sessionEndReason());
   const [email, setEmail] = useState(() => {
     const last = recall(LAST_EMAIL);
     return last && DEMO.includes(last) ? last : DEMO[0];
   });
-  const [password, setPassword] = useState('d1eecc3b8b');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [intent, setIntent] = useState<Intent>(() => (recall(INTENT) === 'buy' ? 'buy' : 'sell'));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +74,8 @@ export default function Login({ onEntered }: { onEntered: () => void }) {
     await wait(still ? 0 : LIGHTS_MS);
     setLeaving(true);
     await wait(still ? 0 : WASH_MS);
-    navigate('/sell', { replace: true });
+    // No navigation here. From the bare root, the root route takes the visitor to
+    // /sell; a link opened while signed out keeps its own page.
     onEntered();
   }
 
@@ -175,10 +175,10 @@ export default function Login({ onEntered }: { onEntered: () => void }) {
               <div className={`lg-box${error ? ' invalid' : ''}`}>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   autoComplete="current-password"
-                  placeholder="password"
+                  placeholder="Enter your password"
                   aria-invalid={!!error}
                   disabled={busy || lit}
                   required
@@ -187,6 +187,29 @@ export default function Login({ onEntered }: { onEntered: () => void }) {
                     setError(null);
                   }}
                 />
+                <button
+                  type="button"
+                  className="lg-reveal"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-controls="password"
+                  aria-pressed={showPassword}
+                  disabled={busy || lit}
+                  onClick={() => setShowPassword((s) => !s)}
+                >
+                  {showPassword ? (
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M10.73 5.08A10.4 10.4 0 0 1 12 5c7 0 10 7 10 7a13.2 13.2 0 0 1-1.67 2.68" />
+                      <path d="M6.61 6.61A13.5 13.5 0 0 0 2 12s3 7 10 7a9.7 9.7 0 0 0 5.39-1.61" />
+                      <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                      <path d="m2 2 20 20" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
               </div>
             </div>
 

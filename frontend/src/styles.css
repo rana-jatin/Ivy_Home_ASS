@@ -644,6 +644,19 @@ main.lg {
 .lg-box input:disabled, .lg-box select:disabled { opacity: .6; }
 .lg-box input[type="password"] { letter-spacing: .08em; }
 .lg-box select { padding-right: 1.75rem; cursor: pointer; }
+.lg-box input::-ms-reveal { display: none; }
+.lg-reveal {
+  display: flex; align-items: center; justify-content: center; flex: none;
+  width: 2.25rem; height: 2.25rem; margin-right: -.5rem; padding: 0;
+  border: 0; border-radius: 999px; background: transparent; color: var(--lg-muted);
+  transition: color .3s, background-color .3s;
+}
+.lg-reveal:hover:not(:disabled) { color: var(--lg-green); }
+.lg-reveal:focus-visible { outline: 2px solid var(--lg-green); outline-offset: 1px; }
+.lg-reveal svg {
+  width: 1.125rem; height: 1.125rem;
+  fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
 .lg-chevron {
   position: absolute; right: 1rem; width: 1rem; height: 1rem; pointer-events: none;
   fill: none; stroke: var(--lg-muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
