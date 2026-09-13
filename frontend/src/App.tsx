@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { getSession, logout, onSessionChange } from './api/client';
 import { DataProvider, useData } from './api/store';
@@ -6,6 +6,7 @@ import { DataStatus, PullBar } from './components/DataStatus';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ScrollManager } from './components/Navigation';
 import { ToastProvider } from './components/Toasts';
+import { WelcomeWash } from './components/Welcome';
 import { SavedProvider } from './lib/saved';
 import Login from './pages/Login';
 import Browse from './pages/Browse';
@@ -64,9 +65,18 @@ function Chrome() {
 
 export default function App() {
   const [signedIn, setSignedIn] = useState(() => !!getSession());
-  useEffect(() => onSessionChange((s) => setSignedIn(!!s)), []);
+  // True just after a sign-in, while the login screen's welcome fades off the app.
+  const [arriving, setArriving] = useState(false);
+  // A session that ends - a sign-out, or a refresh that failed - drops straight to
+  // the login screen. A new one waits for that screen's welcome, via onEntered.
+  useEffect(() => onSessionChange((s) => { if (!s) setSignedIn(false); }), []);
+  const enter = useCallback(() => {
+    setSignedIn(true);
+    setArriving(true);
+  }, []);
+  const arrived = useCallback(() => setArriving(false), []);
 
-  if (!signedIn) return <Login />;
+  if (!signedIn) return <Login onEntered={enter} />;
   return (
     <DataProvider>
       <ToastProvider>
@@ -74,6 +84,7 @@ export default function App() {
           <Chrome />
         </SavedProvider>
       </ToastProvider>
+      {arriving && <WelcomeWash state="leaving" onGone={arrived} />}
     </DataProvider>
   );
 }

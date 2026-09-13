@@ -143,10 +143,6 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .note.bad { border-left-color: var(--bad); }
 .note.warn { border-left-color: var(--warn); }
 
-.center { display: grid; place-items: center; min-height: 100vh; padding: 20px; }
-.login { width: 100%; max-width: 380px; }
-.login .row { margin-bottom: 12px; }
-.err { color: var(--bad); font-size: 14px; margin-top: 10px; }
 .dl { display: grid; grid-template-columns: minmax(140px, auto) 1fr; gap: 8px 18px; font-size: 14px; }
 .dl dt { color: var(--muted); }
 .dl dd { margin: 0; }
@@ -253,6 +249,252 @@ details.tableview summary { cursor: pointer; color: var(--accent); }
 @keyframes shimmer { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- login: the "Come home to Ivy" sign-in, carried over from a Tailwind
+   design (rana-jatin/remix-of-pixel-perfect-replica). It keeps that design's
+   palette - warm ivory, a deep ivy green, an ember used sparingly - and its two
+   faces, and it runs edge to edge over the photograph, so it opts out of main's
+   width and padding. Sizes are in rem to match the original. ---- */
+:where(.lg, .lg-wash) {
+  --lg-ivory: oklch(0.968 0.008 95);
+  --lg-card: oklch(0.985 0.006 95);
+  --lg-ink: oklch(0.222 0.012 165);
+  --lg-green: oklch(0.3 0.045 165);
+  --lg-ember: oklch(0.71 0.104 48);
+  --lg-muted: oklch(0.47 0.02 160);
+  --lg-line: oklch(0.87 0.014 120);
+  --lg-bad: oklch(0.53 0.14 30);
+  --lg-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --lg-shadow-card:
+    0 1px 2px oklch(0.222 0.012 165 / 6%), 0 24px 60px -24px oklch(0.222 0.012 165 / 28%),
+    0 60px 120px -60px oklch(0.222 0.012 165 / 30%);
+  --lg-shadow-lift: 0 10px 30px -12px oklch(0.222 0.012 165 / 30%);
+  /* Vertical rhythm scales down with a short frame so the whole screen - photo,
+     card and tagline - fits without scrolling, and holds at its original size
+     once there's room to spare. */
+  --lg-space-lg: clamp(0.75rem, 3svh, 1.75rem);
+  --lg-space-md: clamp(0.5rem, 2svh, 1.25rem);
+}
+main.lg {
+  position: relative; display: flex; flex-direction: column; min-height: 100vh; min-height: 100svh;
+  max-width: none; margin: 0; padding: 0;
+  /* .lg-scene clips its own sway/drift; main only needs to hide horizontal
+     bleed. Clipping vertically too would work at most window sizes, but on a
+     short one (a laptop lid, an editor's preview frame) the card no longer
+     fits above the fold - it would get pinned to the very top with no margin
+     and the tagline below would vanish with no way to reach it. Scrolling
+     keeps the card properly framed either way. */
+  overflow-x: hidden; overflow-y: auto;
+  background: var(--lg-green); color: var(--lg-ink);
+  font: 16px/1.5 "DM Sans", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+}
+
+/* the apartment, and the light moving through it */
+.lg-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; background: var(--lg-green); }
+.lg-scene picture, .lg-scene img { display: block; width: 100%; height: 100%; }
+.lg-scene img {
+  object-fit: cover; filter: brightness(.92);
+  animation: lg-sway 11s ease-in-out infinite; transition: filter 2.5s ease-out;
+}
+.lg.lit .lg-scene img { filter: brightness(1.12) saturate(1.08); }
+.lg-warmth {
+  position: absolute; top: -25%; right: 0; width: 70%; height: 80%;
+  background: radial-gradient(closest-side, var(--lg-ember), transparent);
+  mix-blend-mode: soft-light; animation: lg-drift 16s ease-in-out infinite;
+}
+/* The breathing runs on the glow itself and the bloom on its holder, so the one
+   does not override the other. */
+.lg-lamp { position: absolute; bottom: 18%; left: 8%; width: 16rem; height: 16rem; transition: transform 2s ease-out; }
+.lg-lamp::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; filter: blur(40px);
+  background: radial-gradient(closest-side, var(--lg-ember), transparent);
+  animation: lg-breathe 9s ease-in-out infinite;
+}
+.lg.lit .lg-lamp { transform: scale(1.35); }
+.lg-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, oklch(0.3 0.045 165 / .8), oklch(0.3 0.045 165 / .25), oklch(0.3 0.045 165 / .45));
+}
+
+.lg-layout { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; }
+.lg-pitch { display: none; animation: lg-fade .6s ease-out both; }
+.lg-pitch-h { margin: 0; max-width: 28rem; font-family: var(--lg-serif); font-size: 2.25rem; line-height: 1.15; color: var(--lg-ivory); }
+.lg-pitch-p { margin: 1rem 0 0; max-width: 24rem; font-size: .95rem; line-height: 1.625; color: oklch(0.968 0.008 95 / .75); }
+.lg-shlok {
+  margin: 1.5rem 0 0; max-width: 24rem; padding-left: 1.125rem;
+  border-left: 2px solid oklch(0.968 0.008 95 / .3);
+}
+.lg-shlok-sa {
+  margin: 0; font-family: "Noto Serif Devanagari", var(--lg-serif), serif;
+  font-size: 1.05rem; line-height: 1.75; color: oklch(0.968 0.008 95 / .92);
+}
+.lg-shlok-en {
+  margin: .625rem 0 0; font-size: .8rem; line-height: 1.6; font-style: italic;
+  color: oklch(0.968 0.008 95 / .58);
+}
+.lg-shlok-src {
+  margin: .5rem 0 0; font-size: .75rem; letter-spacing: .06em; white-space: nowrap;
+  color: oklch(0.968 0.008 95 / .45);
+}
+.lg-tagline {
+  position: relative; z-index: 1; display: none; margin: 0; padding-bottom: var(--lg-space-lg); text-align: center;
+  font-family: var(--lg-serif); font-size: 1.125rem; line-height: 1.75rem; color: oklch(0.968 0.008 95 / .7);
+}
+
+/* the card: a sheet rising from the bottom on a phone, a panel beside the pitch on a desk */
+.lg-card {
+  width: 100%; margin-top: auto; padding-block: clamp(1rem, 4svh, 2rem); padding-inline: 1.5rem;
+  border-top: 1px solid oklch(0.87 0.014 120 / .6); border-radius: 2rem 2rem 0 0;
+  background: oklch(0.968 0.008 95 / .95); box-shadow: var(--lg-shadow-card);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  animation: lg-rise .7s cubic-bezier(.16, 1, .3, 1) both;
+}
+.lg-card h1 {
+  margin: var(--lg-space-lg) 0 0; font-family: var(--lg-serif); font-weight: 400;
+  font-size: 2.1rem; line-height: 1.1; letter-spacing: -.01em; color: var(--lg-green);
+}
+.lg-sub { margin: .625rem 0 0; font-size: .95rem; line-height: 1.625; color: var(--lg-muted); text-wrap: balance; }
+.lg-ended {
+  margin: .875rem 0 0; padding: .625rem .875rem; border-radius: .75rem;
+  background: oklch(0.71 0.104 48 / .14); color: var(--lg-ink); font-size: .875rem; line-height: 1.45;
+}
+.lg-stack { display: flex; flex-direction: column; gap: var(--lg-space-md); margin-top: var(--lg-space-lg); }
+
+.lg-logo { display: inline-flex; align-items: center; gap: .625rem; }
+.lg-logo svg { width: 1.25rem; height: 1.25rem; color: var(--lg-green); transition: color 1s, filter 1s; }
+.lg-logo.lit svg { color: var(--lg-ember); filter: drop-shadow(0 0 10px currentColor); }
+.lg-wordmark { font-family: var(--lg-serif); font-size: 1.25rem; line-height: 1; letter-spacing: .14em; text-transform: uppercase; color: var(--lg-green); }
+
+.lg-intent { align-self: flex-start; display: inline-flex; padding: .25rem; border: 1px solid var(--lg-line); border-radius: 999px; background: var(--lg-card); }
+.lg-intent button {
+  padding: .375rem 1rem; border: 0; border-radius: 999px; background: transparent;
+  color: var(--lg-muted); font-size: .875rem; line-height: 1.25rem; transition: color .3s, background-color .3s;
+}
+.lg-intent button:hover { color: var(--lg-green); }
+.lg-intent button.on { background: var(--lg-green); color: var(--lg-ivory); }
+.lg-intent button:disabled { opacity: 1; }
+
+.lg-field label { margin: 0 0 .5rem; font-size: .875rem; line-height: 1.25rem; color: var(--lg-muted); text-transform: none; letter-spacing: normal; }
+.lg-box {
+  position: relative; display: flex; align-items: center; padding-inline: 1rem;
+  border: 1px solid var(--lg-line); border-radius: 1rem; background: var(--lg-card);
+  transition: border-color .3s, box-shadow .3s;
+}
+.lg-box:focus-within { border-color: var(--lg-green); box-shadow: var(--lg-shadow-lift); }
+.lg-box.invalid { border-color: var(--lg-bad); }
+.lg-box input, .lg-box select {
+  width: 100%; padding: .875rem 0; border: 0; border-radius: 0; background: transparent;
+  color: var(--lg-ink); font-size: 1rem; line-height: 1.5rem; appearance: none;
+}
+.lg-box input:focus, .lg-box select:focus { outline: none; }
+.lg-box input::placeholder { color: oklch(0.47 0.02 160 / .6); }
+.lg-box input:disabled, .lg-box select:disabled { opacity: .6; }
+.lg-box input[type="password"] { letter-spacing: .08em; }
+.lg-box select { padding-right: 1.75rem; cursor: pointer; }
+.lg-chevron {
+  position: absolute; right: 1rem; width: 1rem; height: 1rem; pointer-events: none;
+  fill: none; stroke: var(--lg-muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.lg-error { min-height: 1.25rem; }
+.lg-error p { margin: 0; font-size: .875rem; line-height: 1.25rem; color: var(--lg-bad); }
+
+.lg-go {
+  display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%;
+  padding: 1rem 1.5rem; border: 0; border-radius: 1rem; background: var(--lg-green); color: var(--lg-ivory);
+  font-size: 1rem; line-height: 1.5rem; transition: background-color .3s, box-shadow .3s;
+}
+.lg-go:hover:not(:disabled) { background: oklch(0.3 0.045 165 / .9); box-shadow: var(--lg-shadow-card); }
+.lg-go:disabled { opacity: .7; }
+.lg-go svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.lg-go .lg-arrow { transition: transform .3s; }
+.lg-go:hover:not(:disabled) .lg-arrow { transform: translateX(.25rem); }
+.lg-spin { animation: lg-spin 1s linear infinite; }
+
+.lg-foot { margin: var(--lg-space-lg) 0 0; font-size: .75rem; line-height: 1rem; letter-spacing: .14em; text-transform: uppercase; color: var(--lg-muted); }
+.lg-note { margin: .625rem 0 0; font-size: .75rem; line-height: 1.5; color: var(--lg-muted); }
+
+/* the ivory wash that carries a sign-in into the app */
+.lg-wash {
+  position: fixed; inset: 0; z-index: 50; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+  background: var(--lg-ivory); opacity: 0; transition: opacity 1.2s ease-out;
+}
+.lg-wash-shown { opacity: 1; }
+.lg-wash-leaving { opacity: 1; animation: lg-lower .8s ease-out forwards; }
+.lg-wash .lg-logo { opacity: 0; transform: scale(.95); transition: opacity 1s, transform 1s; }
+.lg-wash-msg {
+  margin: 0; font-family: var(--lg-serif); font-size: 1.875rem; line-height: 2.25rem; color: var(--lg-green);
+  opacity: 0; transform: translateY(.5rem); transition: opacity 1s .2s, transform 1s .2s;
+}
+.lg-wash:not(.lg-wash-hidden) .lg-logo, .lg-wash:not(.lg-wash-hidden) .lg-wash-msg { opacity: 1; transform: none; }
+
+@keyframes lg-sway {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.02); }
+  50% { transform: translate3d(-1.2%, .6%, 0) scale(1.05); }
+}
+@keyframes lg-drift {
+  0%, 100% { opacity: .35; transform: translate3d(0, 0, 0); }
+  50% { opacity: .6; transform: translate3d(2%, -1.5%, 0); }
+}
+@keyframes lg-breathe { 0%, 100% { opacity: .45; } 50% { opacity: .8; } }
+@keyframes lg-rise { from { opacity: 0; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
+@keyframes lg-fade { from { opacity: 0; } }
+@keyframes lg-lower { to { opacity: 0; } }
+@keyframes lg-spin { to { transform: rotate(360deg); } }
+
+@media (min-width: 640px) {
+  .lg-card {
+    padding-block: clamp(1.25rem, 4.5svh, 2.5rem); padding-inline: 2.25rem;
+    border: 1px solid oklch(0.87 0.014 120 / .6); border-radius: 1.75rem;
+  }
+  .lg-card h1 { font-size: 2.6rem; }
+}
+@media (min-width: 768px) {
+  .lg-scrim {
+    background: linear-gradient(to right, oklch(0.3 0.045 165 / .55), oklch(0.3 0.045 165 / .1), oklch(0.3 0.045 165 / .6));
+  }
+  /* the card column never drops below 25rem: narrower than that and its own
+     fields and disclaimer wrap onto extra lines, growing the card taller right
+     where a mid-width frame (around 1024px) is already short on height.
+     padding-block guarantees breathing room top and bottom even when the frame
+     is too short to center the card with room to spare - without it, a short
+     frame could center the row into having zero margin on one side. */
+  .lg-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(25rem, 28rem);
+    align-items: center; gap: 2.5rem; padding-block: var(--lg-space-lg); padding-inline: 3rem;
+  }
+  .lg-pitch, .lg-tagline { display: block; }
+  .lg-card { max-width: 28rem; margin-top: 0; justify-self: end; }
+}
+@media (min-width: 1024px) {
+  .lg-pitch-h { font-size: 3rem; }
+}
+/* wider than 1024px only: extra side padding here would otherwise narrow the
+   card at exactly the width where it's already tight, forcing its text onto
+   more lines and growing taller than the frame */
+@media (min-width: 1280px) {
+  .lg-layout { padding-inline: 5rem; }
+}
+/* the tagline is flavour text, already said in spirit by the pitch above it -
+   the first thing to give up so the card itself never needs a scrollbar */
+@media (max-height: 760px) {
+  .lg-tagline { display: none; }
+}
+/* on a genuinely short frame, the footer disclaimers are next: neither is
+   needed to sign in, and dropping them buys back real room after the vertical
+   rhythm has already been squeezed as far as it can go without cramping the
+   fields and button themselves */
+@media (max-height: 680px) {
+  .lg-foot, .lg-note { display: none; }
+}
+/* still: nothing sways or drifts, and the wash cuts rather than fades */
+@media (prefers-reduced-motion: reduce) {
+  .lg *, .lg *::before, .lg-wash, .lg-wash * {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important; transition-delay: 0s !important;
+  }
+}
 
 /* ---- narrow screens ---- */
 @media (max-width: 720px) {
