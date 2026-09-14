@@ -4,6 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- The sign-in photograph is imported from JS, so on its own the browser
+         only finds it once the bundle has downloaded and rendered, and the card
+         shows up well before the room behind it. Preloading it here starts the
+         download alongside the bundle instead. Signed-in visitors never see the
+         sign-in screen, so they skip it (the key is STORAGE_KEY in
+         src/api/client.ts). This sits above the stylesheets because an inline
+         script waits for any stylesheet before it to finish loading. -->
+    <template id="lg-preload">
+      <link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 768px)" href="/src/assets/login/scene.webp" />
+      <link rel="preload" as="image" type="image/webp" fetchpriority="high" media="not all and (min-width: 768px)" href="/src/assets/login/scene-mobile.webp" />
+    </template>
+    <script>
+      (function () {
+        var signedIn = false;
+        try { signedIn = !!localStorage.getItem('ivy.session'); } catch (e) {}
+        if (!signedIn) document.head.appendChild(document.getElementById('lg-preload').content);
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" />

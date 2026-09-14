@@ -7,8 +7,9 @@
 
 import { useState, type FormEvent } from 'react';
 import { login, sessionEndReason } from '../api/client';
-import scene from '../assets/login/scene.jpg';
-import sceneMobile from '../assets/login/scene-mobile.jpg';
+// index.html preloads these same two files; keep the paths there in step.
+import scene from '../assets/login/scene.webp';
+import sceneMobile from '../assets/login/scene-mobile.webp';
 import { IvyLogo, WelcomeWash } from '../components/Welcome';
 import { useTitle } from '../lib/useTitle';
 
@@ -54,6 +55,7 @@ export default function Login({ onEntered }: { onEntered: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [lit, setLit] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const [sceneReady, setSceneReady] = useState(false);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -89,9 +91,17 @@ export default function Login({ onEntered }: { onEntered: () => void }) {
   return (
     <main className={`lg${lit ? ' lit' : ''}`}>
       <div className="lg-scene" aria-hidden="true">
+        {/* a blurred thumbnail sits behind this until the photograph arrives,
+            which then fades in over it rather than popping */}
         <picture>
           <source media="(min-width: 768px)" srcSet={scene} />
-          <img src={sceneMobile} alt="" />
+          <img
+            src={sceneMobile}
+            alt=""
+            decoding="async"
+            className={sceneReady ? 'ready' : ''}
+            onLoad={() => setSceneReady(true)}
+          />
         </picture>
         {/* evening warmth drifting through the window */}
         <div className="lg-warmth" />

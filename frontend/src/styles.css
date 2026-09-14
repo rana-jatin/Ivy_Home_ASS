@@ -544,11 +544,21 @@ main.lg {
 
 /* the apartment, and the light moving through it */
 .lg-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; background: var(--lg-green); }
+/* A ~275-byte thumbnail of the photograph (small enough for the build to inline
+   into this stylesheet), blurred, so the first paint already shows the room.
+   The negative inset keeps the blur's soft edge outside the frame. */
+.lg-scene::before {
+  content: ''; position: absolute; inset: -3rem;
+  background: url('./assets/login/scene-mobile-tiny.webp') center / cover;
+  filter: blur(1.5rem) brightness(.92);
+}
+.lg-scene picture { position: relative; }
 .lg-scene picture, .lg-scene img { display: block; width: 100%; height: 100%; }
 .lg-scene img {
-  object-fit: cover; filter: brightness(.92);
-  animation: lg-sway 11s ease-in-out infinite; transition: filter 2.5s ease-out;
+  object-fit: cover; filter: brightness(.92); opacity: 0;
+  animation: lg-sway 11s ease-in-out infinite; transition: opacity .6s ease-out, filter 2.5s ease-out;
 }
+.lg-scene img.ready { opacity: 1; }
 .lg.lit .lg-scene img { filter: brightness(1.12) saturate(1.08); }
 .lg-warmth {
   position: absolute; top: -25%; right: 0; width: 70%; height: 80%;
@@ -717,6 +727,7 @@ main.lg {
   .lg-card h1 { font-size: 2.6rem; }
 }
 @media (min-width: 768px) {
+  .lg-scene::before { background-image: url('./assets/login/scene-tiny.webp'); }
   .lg-scrim {
     background: linear-gradient(to right, oklch(0.3 0.045 165 / .55), oklch(0.3 0.045 165 / .1), oklch(0.3 0.045 165 / .6));
   }
