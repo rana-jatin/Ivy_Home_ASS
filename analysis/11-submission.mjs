@@ -12,9 +12,9 @@ const findings = read('out-findings.json');
 
 const candidate = {
   name: 'Jatin Rana',
-  email: 'jatinrana1230987@gmail.com',
+  email: 'jatin.20234073@mnnit.ac.in',
   repo_url: 'https://github.com/rana-jatin/Ivy_Home_ASS',
-  demo_url: 'https://ivy-home-ass007-delta.vercel.app',
+  demo_url: 'https://ivy-home-ass-rqar.vercel.app/',
 };
 
 const submission = { api_key: E.IVY_API_KEY, candidate, answers, findings };
