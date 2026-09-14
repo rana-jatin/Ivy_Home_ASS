@@ -34,9 +34,11 @@ add('/auth/login', 'auth',
   'probe/02-token-ttl-soak.mjs held one token and polled /v1/listings every 60 seconds until it broke',
   'an app built on the documented lifetime is dead 15 minutes after login, which is exactly the case the brief asks to survive for 30');
 
-add('/auth/login', 'auth',
+// The reference writes no path for refresh, so this is reported where the API
+// serves it - the login response's refresh_url names /auth/refresh.
+add('/auth/refresh', 'auth',
   'there is no refresh flow',
-  'POST /auth/refresh exists, takes a refresh_token in the body and returns a fresh access token; the 401 body from an expired token names it',
+  'POST /auth/refresh exists, takes a refresh_token in the body and returns a fresh access token; the login response names it in refresh_url and the 401 body from an expired token names it too',
   'probed /auth/refresh in the recon sweep and then used it at the end of the TTL soak to restore access',
   'the only supported way to keep a session alive past 15 minutes, and the docs say it does not exist');
 
@@ -102,12 +104,6 @@ add('/v1/analytics/summary', 'missing_endpoint',
   'probe/03-endpoint-sweep.mjs',
   'the insights screen the brief asks for has to be computed from the raw collections, and every number on it is the client own work');
 
-add('/v2/listings', 'missing_endpoint',
-  '/llms.txt, served by this same API, advertises a v2 surface: /v2/listings, /v2/listings/search, /v2/insights/summary and /v2/valuation/{listing_id}',
-  'all of them 404, with a body that says there is no /v2 and that llms.txt announced it early',
-  'probe/05-v2-and-aux.mjs followed every link in /llms.txt',
-  'a second documentation file, served by the service itself, advertises four endpoints that were never built - including the analytics summary that the main reference also promises');
-
 // ------------------------------------------------ undocumented endpoint ----
 add('/v1/saved', 'undocumented_endpoint',
   'not documented; the reference describes /v1/favourites instead',
@@ -126,12 +122,6 @@ add('/v1/localities', 'undocumented_endpoint',
   'returns the city and a per-locality listing_count for all ten localities of the key city',
   'probe/03-endpoint-sweep.mjs',
   'its counts are correct and sum to exactly 4100, so it is an independent check on a full pull - and it contradicts the total field on /v1/listings');
-
-add('/', 'undocumented_endpoint',
-  'not documented',
-  'a service index returning service, version, docs, health, register and a for_agents pointer to /llms.txt, including a note that the reference was written against an older build and never reviewed',
-  'probe/03-endpoint-sweep.mjs requested the root',
-  'the API says in its own root response that its documentation is unreliable');
 
 // ------------------------------------------------------------- filters ----
 add('/v1/listings', 'filters',
@@ -152,14 +142,10 @@ add('/v1/listings', 'filters',
   'probe/09-params.mjs',
   'the documented way to cross-check a project listing count cannot be run at all');
 
-add('/v1/listings', 'filters',
-  'the documented parameter list is the accepted parameter list',
-  'unknown query parameters are accepted silently with 200 and no effect - an invented parameter is as welcome as a real one. Only sort_by validates its value, with 400 on an unknown field',
-  'probe/09-params.mjs sent a deliberately invented parameter alongside the real ones and compared totals',
-  'there is no way to tell a typo, a wrong parameter name or an unimplemented filter from a working one except by checking the records that come back');
-
 // ------------------------------------------------------------- sorting ----
-add('*', 'sorting',
+// Only listings and rentals carry posted_at, and the reference names it as a
+// sort field under /v1/listings alone, so this is not a '*' finding.
+add('/v1/listings', 'sorting',
   'sort_by=posted_at orders by the posting timestamp',
   'it orders by the IST calendar date only. Within one date the order is arbitrary: a full sorted pull of 4100 listings has 1902 places where the next timestamp is earlier than the previous one, with drops of up to 23.45 hours and never more. Bucketing by IST date reproduces the server order with 0 violations in 4100; bucketing by UTC date gives 865',
   'probe/11-sorted-pulls.mjs pulled the whole collection in sort order and analysis/02-timestamps.mjs tested each candidate sort key against that order',
@@ -195,22 +181,17 @@ add('*', 'sorting',
 }
 
 // -------------------------------------------------------- completeness ----
+// The reference promises active-only for listings but says nothing either way
+// about rentals, so the rental count rides along here rather than standing as
+// a finding of its own.
 {
   const dead = L.filter((r) => !r.is_live);
+  const deadRentals = R.filter((r) => !r.is_live);
   add('/v1/listings', 'completeness',
     'returns active sale listings; inactive, expired and withdrawn listings are excluded server side, so anything this endpoint returns is safe to show to a user',
-    `every record carries an undocumented is_live field and ${dead.length} of 4100 have it false. They are returned with no filter applied, and there is no parameter that excludes them - is_live=true is accepted and ignored like every other unknown parameter`,
+    `every record carries an undocumented is_live field and ${dead.length} of 4100 have it false. They are returned with no filter applied, and there is no parameter that excludes them - is_live=true is accepted and ignored like every other unknown parameter. /v1/rentals carries the same field, with ${deadRentals.length} of 1550 false`,
     'analysis/00-schema-diff.mjs diffed every field of every record against the documented object and found is_live as the only addition; probe/09-params.mjs then confirmed it cannot be filtered on',
     'the endpoint is not safe to show to a user as the docs claim, and any count of active listings taken from it is 867 too high unless the client filters on a field the docs do not mention',
-    take(dead.map((r) => r.listing_id)));
-}
-{
-  const dead = R.filter((r) => !r.is_live);
-  add('/v1/rentals', 'completeness',
-    'the documented rental object has no is_live field and nothing is said about inactive rentals',
-    `rentals carry the same undocumented is_live field and ${dead.length} of 1550 are false`,
-    'analysis/00-schema-diff.mjs',
-    'same trap as on listings: a rentals list built from the docs shows 258 records that are not live',
     take(dead.map((r) => r.listing_id)));
 }
 
@@ -251,19 +232,15 @@ add('/v1/listings', 'fraud',
     take(wrong.map((p) => p.project_id)));
 }
 
-add('/v1/listings', 'consistency',
-  'total is the exact number of records matching your filters',
-  'the undocumented /v1/localities reports a per-locality listing_count over the same city and the same data. Those counts are right - they match an exhaustive pull for all ten localities - and they sum to 4100, against the 3923 that /v1/listings reports as its total',
-  'compared /v1/localities against the exhaustive pull in analysis/08-answers.mjs, after probe/07-find-the-end.mjs showed that total was short',
-  'two endpoints of one service disagree about how much data the service holds, and the undocumented one is the one telling the truth',
-  ['velachery', 'guindy', 'omr', 'anna nagar', 'thoraipakkam']);
-
-add('/llms.txt', 'consistency',
-  'a second documentation file served by this API states, for Chennai, 3,916 listing records, 3,266 distinct properties, 3,000 live listings and 107 projects whose listing count is off, counted from a full crawl on the reference date',
-  `an actual full crawl on this key gives 4100 records, ${dup.distinct_properties} distinct properties, ${L.filter((r) => r.is_live).length} live listings and 119 projects whose count is off. All four figures are wrong`,
-  'pulled every collection to exhaustion and compared, analysis/08-answers.mjs. The file itself admits it was generated from the same changelog by the same assistant and reviewed by the same nobody',
-  'an agent that reads llms.txt to save itself a crawl - which is what the file is for - gets four wrong numbers and no warning',
-  ['velachery', 'guindy', 'omr']);
+// Deliberately not filed, though each was reproduced:
+// - /v2/* and the /llms.txt figures: neither is in API_REFERENCE.md, and llms.txt
+//   is the same file for every city, so it is not what this key's reference got wrong.
+// - / (service index): an undocumented path, but it belongs with robots.txt,
+//   humans.txt and sitemap.xml, not with the API.
+// - unknown query parameters returning 200: the reference makes no claim about them,
+//   and the documented filters that are ignored are already filed one by one.
+// - /v1/localities summing to 4100 against total=3923: the same fact as the
+//   pagination finding on total, and locality names are not valid evidence.
 
 writeFileSync(join(ROOT, 'analysis/out-findings.json'), JSON.stringify(F, null, 2));
 const byCat = F.reduce((a, f) => { a[f.category] = (a[f.category] ?? 0) + 1; return a; }, {});

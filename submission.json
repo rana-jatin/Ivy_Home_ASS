@@ -225,10 +225,10 @@
       "evidence": []
     },
     {
-      "endpoint": "/auth/login",
+      "endpoint": "/auth/refresh",
       "category": "auth",
       "documented": "there is no refresh flow",
-      "actual": "POST /auth/refresh exists, takes a refresh_token in the body and returns a fresh access token; the 401 body from an expired token names it",
+      "actual": "POST /auth/refresh exists, takes a refresh_token in the body and returns a fresh access token; the login response names it in refresh_url and the 401 body from an expired token names it too",
       "how_found": "probed /auth/refresh in the recon sweep and then used it at the end of the TTL soak to restore access",
       "impact": "the only supported way to keep a session alive past 15 minutes, and the docs say it does not exist",
       "evidence": []
@@ -324,15 +324,6 @@
       "evidence": []
     },
     {
-      "endpoint": "/v2/listings",
-      "category": "missing_endpoint",
-      "documented": "/llms.txt, served by this same API, advertises a v2 surface: /v2/listings, /v2/listings/search, /v2/insights/summary and /v2/valuation/{listing_id}",
-      "actual": "all of them 404, with a body that says there is no /v2 and that llms.txt announced it early",
-      "how_found": "probe/05-v2-and-aux.mjs followed every link in /llms.txt",
-      "impact": "a second documentation file, served by the service itself, advertises four endpoints that were never built - including the analytics summary that the main reference also promises",
-      "evidence": []
-    },
-    {
       "endpoint": "/v1/saved",
       "category": "undocumented_endpoint",
       "documented": "not documented; the reference describes /v1/favourites instead",
@@ -357,15 +348,6 @@
       "actual": "returns the city and a per-locality listing_count for all ten localities of the key city",
       "how_found": "probe/03-endpoint-sweep.mjs",
       "impact": "its counts are correct and sum to exactly 4100, so it is an independent check on a full pull - and it contradicts the total field on /v1/listings",
-      "evidence": []
-    },
-    {
-      "endpoint": "/",
-      "category": "undocumented_endpoint",
-      "documented": "not documented",
-      "actual": "a service index returning service, version, docs, health, register and a for_agents pointer to /llms.txt, including a note that the reference was written against an older build and never reviewed",
-      "how_found": "probe/03-endpoint-sweep.mjs requested the root",
-      "impact": "the API says in its own root response that its documentation is unreliable",
       "evidence": []
     },
     {
@@ -397,15 +379,6 @@
     },
     {
       "endpoint": "/v1/listings",
-      "category": "filters",
-      "documented": "the documented parameter list is the accepted parameter list",
-      "actual": "unknown query parameters are accepted silently with 200 and no effect - an invented parameter is as welcome as a real one. Only sort_by validates its value, with 400 on an unknown field",
-      "how_found": "probe/09-params.mjs sent a deliberately invented parameter alongside the real ones and compared totals",
-      "impact": "there is no way to tell a typo, a wrong parameter name or an unimplemented filter from a working one except by checking the records that come back",
-      "evidence": []
-    },
-    {
-      "endpoint": "*",
       "category": "sorting",
       "documented": "sort_by=posted_at orders by the posting timestamp",
       "actual": "it orders by the IST calendar date only. Within one date the order is arbitrary: a full sorted pull of 4100 listings has 1902 places where the next timestamp is earlier than the previous one, with drops of up to 23.45 hours and never more. Bucketing by IST date reproduces the server order with 0 violations in 4100; bucketing by UTC date gives 865",
@@ -507,7 +480,7 @@
       "endpoint": "/v1/listings",
       "category": "completeness",
       "documented": "returns active sale listings; inactive, expired and withdrawn listings are excluded server side, so anything this endpoint returns is safe to show to a user",
-      "actual": "every record carries an undocumented is_live field and 867 of 4100 have it false. They are returned with no filter applied, and there is no parameter that excludes them - is_live=true is accepted and ignored like every other unknown parameter",
+      "actual": "every record carries an undocumented is_live field and 867 of 4100 have it false. They are returned with no filter applied, and there is no parameter that excludes them - is_live=true is accepted and ignored like every other unknown parameter. /v1/rentals carries the same field, with 258 of 1550 false",
       "how_found": "analysis/00-schema-diff.mjs diffed every field of every record against the documented object and found is_live as the only addition; probe/09-params.mjs then confirmed it cannot be filtered on",
       "impact": "the endpoint is not safe to show to a user as the docs claim, and any count of active listings taken from it is 867 too high unless the client filters on a field the docs do not mention",
       "evidence": [
@@ -531,36 +504,6 @@
         "DWE-4001665",
         "100-4000663",
         "ZER-4003649"
-      ]
-    },
-    {
-      "endpoint": "/v1/rentals",
-      "category": "completeness",
-      "documented": "the documented rental object has no is_live field and nothing is said about inactive rentals",
-      "actual": "rentals carry the same undocumented is_live field and 258 of 1550 are false",
-      "how_found": "analysis/00-schema-diff.mjs",
-      "impact": "same trap as on listings: a rentals list built from the docs shows 258 records that are not live",
-      "evidence": [
-        "R4000014",
-        "R4000021",
-        "R4000022",
-        "R4000024",
-        "R4000026",
-        "R4000027",
-        "R4000035",
-        "R4000036",
-        "R4000038",
-        "R4000040",
-        "R4000056",
-        "R4000057",
-        "R4000060",
-        "R4000082",
-        "R4000083",
-        "R4000088",
-        "R4000104",
-        "R4000107",
-        "R4000111",
-        "R4000127"
       ]
     },
     {
@@ -681,34 +624,6 @@
         "P40063",
         "P40067",
         "P40075"
-      ]
-    },
-    {
-      "endpoint": "/v1/listings",
-      "category": "consistency",
-      "documented": "total is the exact number of records matching your filters",
-      "actual": "the undocumented /v1/localities reports a per-locality listing_count over the same city and the same data. Those counts are right - they match an exhaustive pull for all ten localities - and they sum to 4100, against the 3923 that /v1/listings reports as its total",
-      "how_found": "compared /v1/localities against the exhaustive pull in analysis/08-answers.mjs, after probe/07-find-the-end.mjs showed that total was short",
-      "impact": "two endpoints of one service disagree about how much data the service holds, and the undocumented one is the one telling the truth",
-      "evidence": [
-        "velachery",
-        "guindy",
-        "omr",
-        "anna nagar",
-        "thoraipakkam"
-      ]
-    },
-    {
-      "endpoint": "/llms.txt",
-      "category": "consistency",
-      "documented": "a second documentation file served by this API states, for Chennai, 3,916 listing records, 3,266 distinct properties, 3,000 live listings and 107 projects whose listing count is off, counted from a full crawl on the reference date",
-      "actual": "an actual full crawl on this key gives 4100 records, 3116 distinct properties, 3233 live listings and 119 projects whose count is off. All four figures are wrong",
-      "how_found": "pulled every collection to exhaustion and compared, analysis/08-answers.mjs. The file itself admits it was generated from the same changelog by the same assistant and reviewed by the same nobody",
-      "impact": "an agent that reads llms.txt to save itself a crawl - which is what the file is for - gets four wrong numbers and no warning",
-      "evidence": [
-        "velachery",
-        "guindy",
-        "omr"
       ]
     }
   ]

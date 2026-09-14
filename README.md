@@ -42,7 +42,7 @@ README explains how I got there, including the ideas that turned out to be wrong
   Sell page on top. The app downloads the whole city once, fixes the data, and
   does all the filtering in the browser, because several of the server's
   filters are accepted and then ignored.
-- **I found 35 places where the documentation is wrong**, and reproduced every
+- **I found 29 places where the documentation is wrong**, and reproduced every
   one. Some are easy to spot: wrong paths, wrong field names, and a login token
   that lasts 15 minutes instead of 24 hours. Most are not visible in any single
   response. Areas are in the wrong unit on 337 listings, project prices are
@@ -81,7 +81,7 @@ scripts that produce them are in `analysis/`.
 
 | Path | What it is |
 | --- | --- |
-| `submission.json` | The ten answers and 35 findings, in the format the brief asks for |
+| `submission.json` | The ten answers and 29 findings, in the format the brief asks for |
 | `findings.md` | My working log: each hypothesis, how I tested it and what happened, dead ends included |
 | `frontend/` | The web app: React 18, TypeScript and Vite, deployed on Vercel |
 | `probe/` | Scripts that call the live API, numbered in the order I ran them |
@@ -271,9 +271,11 @@ would page and filter on the server instead.
 
 ## Where the documentation is wrong
 
-These are the 35 findings in `submission.json`, shortened to one line each. The
+These are the 29 findings in `submission.json`, shortened to one line each. The
 full versions there also say how I found each one and what it would break. I
-reproduced every one myself and left out anything I couldn't.
+reproduced every one myself and left out anything I couldn't. A few things I
+did reproduce but chose not to file are listed at the end of this section, with
+the reason for each.
 
 ### Logging in and sessions
 
@@ -303,7 +305,6 @@ reproduced every one myself and left out anything I couldn't.
 | `/v1/listings/{id}/similar` | 404 under every spelling I tried. |
 | `/v1/favourites` | 404, and so is `/v1/favorites`. Saved listings live at `/v1/saved`. |
 | `/v1/analytics/summary` | 404, along with every nearby path I tried. |
-| `/v2/listings`, and three more v2 paths advertised in `/llms.txt` | All 404, with a message saying there is no v2. |
 
 ### Endpoints that exist but aren't documented
 
@@ -312,7 +313,6 @@ reproduced every one myself and left out anything I couldn't.
 | `/v1/saved` | The real saved-listings API. The request body needs `listing_id`; the documented `id` gets a 422. |
 | `/v1/me` | Returns the user's city, assigned locality and reference date. |
 | `/v1/localities` | Listing counts for all ten localities. They are correct and add up to 4,100. |
-| `/` | A service index that itself says the reference was written against an older build and never reviewed. |
 
 ### Filters and sorting
 
@@ -321,7 +321,6 @@ reproduced every one myself and left out anything I couldn't.
 | `min_price` and `max_price` filter listings | Both ignored. `min_price=20000000` still returns everything, starting with a ₹6,610,000 flat. |
 | `furnishing` filters listings | Ignored on listings, even though the same filter works on rentals. |
 | `project_id` filters listings | Ignored. The first record back belongs to a different project. |
-| The documented parameters are the accepted ones | Any made-up parameter gets a 200 and does nothing. Only `sort_by` checks its value. |
 | `sort_by=posted_at` sorts by timestamp | It sorts by IST date only. Within a day the order is arbitrary. |
 
 ### Units
@@ -336,8 +335,7 @@ reproduced every one myself and left out anything I couldn't.
 
 | The documentation says | What actually happens |
 | --- | --- |
-| Listings only include active ones | 867 of 4,100 have an undocumented `is_live: false`, and nothing filters them out. |
-| Nothing about inactive rentals | 258 of 1,550 rentals are not live either. |
+| Listings only include active ones | 867 of 4,100 have an undocumented `is_live: false`, and nothing filters them out. Rentals carry the same field, with 258 of 1,550 false. |
 | Each listing is exactly one property | 4,100 records describe 3,116 properties. 984 are re-posts with the details slightly changed. |
 | Listings are real, and `is_verified` means checked | 63 describe things that can't exist: negative prices, a floor above the top of the building, a pin in the Bay of Bengal, dates in 2027 and more. |
 | `posted_by_contact` is the seller's verified number | 7 numbers post 110 fake listings at about half the market price, and every one is marked verified and live. |
@@ -347,8 +345,21 @@ reproduced every one myself and left out anything I couldn't.
 | The documentation says | What actually happens |
 | --- | --- |
 | A project's `total_listings` always matches its listings | It is wrong for 119 of 460 projects. |
-| `total` on `/v1/listings` is exact | The undocumented `/v1/localities` adds up to 4,100, against a `total` of 3,923. |
-| `/llms.txt` gives correct headline numbers for Chennai | All four are wrong. It says 3,916 records; a full pull gives 4,100. |
+
+### Reproduced, but not filed
+
+The brief scores findings on precision as much as recall, and it asks where
+*the documentation* is wrong. These are all real, but none of them is a claim
+in `API_REFERENCE.md` that the API contradicts, so each would most likely count
+as a guess.
+
+| What I saw | Why it isn't a finding |
+| --- | --- |
+| `/v2/listings`, `/v2/listings/search`, `/v2/insights/summary` and `/v2/valuation/{id}` all return 404 | They are only advertised in `/llms.txt`, not in the reference. The 404 itself says "llms.txt announced it early". |
+| `/llms.txt` gives four wrong headline numbers for Chennai (3,916 records, 3,266 properties, 3,000 live, 107 projects off) | Same file, and it lists figures for all six cities, so it isn't something this key's documentation got wrong. |
+| `/` is an undocumented service index | It points agents at `/llms.txt` and sits with `robots.txt`, `humans.txt` and `sitemap.xml`, none of which is part of the API. |
+| Made-up query parameters get a 200 and do nothing | The reference makes no claim about unknown parameters. The documented filters that are ignored are filed one by one above. |
+| `/v1/localities` adds up to 4,100 while `total` on `/v1/listings` says 3,923 | It is the same fact as the `total` finding under Paging, so filing it twice would count one discrepancy as two. |
 
 ---
 
